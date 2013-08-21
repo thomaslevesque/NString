@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NString", "NString\NString.csproj", "{F68C9EA5-B24A-4655-B396-448056E58B32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NString.Tests", "NString.Tests\NString.Tests.csproj", "{6C31C1B8-EA85-4161-A112-D4053A0BB215}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F68C9EA5-B24A-4655-B396-448056E58B32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F68C9EA5-B24A-4655-B396-448056E58B32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F68C9EA5-B24A-4655-B396-448056E58B32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F68C9EA5-B24A-4655-B396-448056E58B32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C31C1B8-EA85-4161-A112-D4053A0BB215}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C31C1B8-EA85-4161-A112-D4053A0BB215}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C31C1B8-EA85-4161-A112-D4053A0BB215}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C31C1B8-EA85-4161-A112-D4053A0BB215}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

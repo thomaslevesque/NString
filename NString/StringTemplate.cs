@@ -78,9 +78,10 @@ namespace NString
         /// <param name="values">A dictionary containing values for each placeholder in the template</param>
         /// <param name="throwOnMissingValue">Indicates whether or not to throw an exception if a value is missing for a placeholder.
         /// If this parameter is false and no value is found, the placeholder is left as is in the formatted string.</param>
+        /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public string Format(IDictionary<string, object> values, bool throwOnMissingValue = true)
+        public string Format(IDictionary<string, object> values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
         {
             values.CheckArgumentNull("values");
 
@@ -97,7 +98,7 @@ namespace NString
                 }
                 array[i] = value;
             }
-            return string.Format(_templateWithIndexes, array);
+            return string.Format(formatProvider, _templateWithIndexes, array);
         }
 
         /// <summary>
@@ -107,12 +108,13 @@ namespace NString
         /// corresponding property of field in this object.</param>
         /// <param name="throwOnMissingValue">Indicates whether or not to throw an exception if a value is missing for a placeholder.
         /// If this parameter is false and no value is found, the placeholder is left as is in the formatted string.</param>
+        /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public string Format(object values, bool throwOnMissingValue = true)
+        public string Format(object values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
         {
             values.CheckArgumentNull("values");
-            return Format(MakeDictionary(values), throwOnMissingValue);
+            return Format(MakeDictionary(values), throwOnMissingValue, formatProvider);
         }
 
         /// <summary>
@@ -122,11 +124,12 @@ namespace NString
         /// <param name="values">A dictionary containing values for each placeholder in the template</param>
         /// <param name="throwOnMissingValue">Indicates whether or not to throw an exception if a value is missing for a placeholder.
         /// If this parameter is false and no value is found, the placeholder is left as is in the formatted string.</param>
+        /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public static string Format(string template, IDictionary<string, object> values, bool throwOnMissingValue = true)
+        public static string Format(string template, IDictionary<string, object> values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
         {
-            return GetTemplate(template).Format(values, throwOnMissingValue);
+            return GetTemplate(template).Format(values, throwOnMissingValue, formatProvider);
         }
 
         /// <summary>
@@ -137,11 +140,12 @@ namespace NString
         /// corresponding property of field in this object.</param>
         /// <param name="throwOnMissingValue">Indicates whether or not to throw an exception if a value is missing for a placeholder.
         /// If this parameter is false and no value is found, the placeholder is left as is in the formatted string.</param>
+        /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public static string Format(string template, object values, bool throwOnMissingValue = true)
+        public static string Format(string template, object values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
         {
-            return GetTemplate(template).Format(values, throwOnMissingValue);
+            return GetTemplate(template).Format(values, throwOnMissingValue, formatProvider);
         }
 
         private void ParseTemplate(out string templateWithIndexes, out IList<string> placeholders)
@@ -211,7 +215,7 @@ namespace NString
         private static StringTemplate GetTemplate([NotNull] string template)
         {
             if (template == null) throw new ArgumentNullException("template");
-            return _templateCache.GetOrAdd(template, t => new StringTemplate(t));
+            return _templateCache.GetOrAdd(template, () => new StringTemplate(template));
         }
 
         private static readonly Cache<Type, Cache<string, Func<object, object>>> _gettersCache =
@@ -219,8 +223,8 @@ namespace NString
 
         private static Func<object, object> GetGetterFromCache(Type type, string memberName)
         {
-            var typeGetters = _gettersCache.GetOrAdd(type, t => new Cache<string, Func<object, object>>());
-            var getter = typeGetters.GetOrAdd(memberName, name => CreateGetter(type, name));
+            var typeGetters = _gettersCache.GetOrAdd(type, () => new Cache<string, Func<object, object>>());
+            var getter = typeGetters.GetOrAdd(memberName, () => CreateGetter(type, memberName));
             return getter;
         }
 

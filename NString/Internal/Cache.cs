@@ -9,12 +9,12 @@ namespace NString.Internal
     {
         private IImmutableDictionary<TKey, TValue> _cache = ImmutableDictionary.Create<TKey, TValue>();
 
-        public TValue GetOrAdd(TKey key, [NotNull] Func<TKey, TValue> valueFactory)
+        public TValue GetOrAdd(TKey key, [NotNull] Func<TValue> valueFactory)
         {
             valueFactory.CheckArgumentNull("valueFactory");
 
-            TValue newValue = default(TValue);
-            bool newValueCreated = false;
+            Lazy<TValue> newValue = new Lazy<TValue>(valueFactory);
+
             while (true)
             {
                 var oldCache = _cache;
@@ -22,19 +22,13 @@ namespace NString.Internal
                 if (oldCache.TryGetValue(key, out value))
                     return value;
 
-                // Value not found; create it if necessary
-                if (!newValueCreated)
-                {
-                    newValue = valueFactory(key);
-                    newValueCreated = true;
-                }
-
-                // Add the new value to the cache
-                var newCache = oldCache.Add(key, newValue);
+                // Value not found ; create it and add it to the cache
+                value = newValue.Value;
+                var newCache = oldCache.Add(key, value);
                 if (Interlocked.CompareExchange(ref _cache, newCache, oldCache) == oldCache)
                 {
                     // Cache successfully written
-                    return newValue;
+                    return value;
                 }
 
                 // Failed to write the new cache because another thread

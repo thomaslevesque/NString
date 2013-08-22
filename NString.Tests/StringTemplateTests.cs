@@ -1,5 +1,5 @@
-﻿// ReSharper disable InconsistentNaming
-
+﻿using System.Globalization;
+// ReSharper disable InconsistentNaming
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -146,6 +146,21 @@ namespace NString.Tests
             var t2 = StringTemplate.Parse("{X}");
 
             Assert.AreSame(t1, t2);
+        }
+
+        [TestMethod]
+        public void Test_WithFormatProvider()
+        {
+            var date = DateTime.Today;
+
+            var cultures = new[] { CultureInfo.InvariantCulture, null, CultureInfo.GetCultureInfo("fr-FR") };
+
+            foreach (var culture in cultures)
+            {
+                string expected = date.ToString("D", culture);
+                string actual = StringTemplate.Format("{date:D}", new { date }, true, culture);
+                Assert.AreEqual(expected, actual);
+            }
         }
 
         // ReSharper disable NotAccessedField.Local

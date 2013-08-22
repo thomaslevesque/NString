@@ -51,6 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ExceptionAssert.cs" />
+    <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="StringTemplateTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

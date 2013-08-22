@@ -214,12 +214,12 @@ namespace NString
             return _templateCache.GetOrAdd(template, t => new StringTemplate(t));
         }
 
-        private static readonly Cache<TypeKey, Cache<string, Func<object, object>>> _gettersCache =
-            new Cache<TypeKey, Cache<string, Func<object, object>>>();
+        private static readonly Cache<Type, Cache<string, Func<object, object>>> _gettersCache =
+            new Cache<Type, Cache<string, Func<object, object>>>();
 
         private static Func<object, object> GetGetterFromCache(Type type, string memberName)
         {
-            var typeGetters = _gettersCache.GetOrAdd(new TypeKey(type), typeKey => new Cache<string, Func<object, object>>());
+            var typeGetters = _gettersCache.GetOrAdd(type, t => new Cache<string, Func<object, object>>());
             var getter = typeGetters.GetOrAdd(memberName, name => CreateGetter(type, name));
             return getter;
         }
@@ -229,45 +229,31 @@ namespace NString
             MemberInfo member = null;
             while (type != null)
             {
-                var prop = type.GetProperty(memberName, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-                if (prop != null && prop.CanRead)
+                var info = type.GetTypeInfo();
+                var prop = info.GetDeclaredProperty(memberName);
+                if (prop != null && prop.CanRead && prop.GetMethod.IsPublic)
                 {
                     member = prop;
                     break;
                 }
-                var field = type.GetField(memberName, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-                if (field != null)
+                var field = info.GetDeclaredField(memberName);
+                if (field != null && field.IsPublic)
                 {
                     member = field;
                     break;
                 }
-                type = type.BaseType;
+                type = info.BaseType;
             }
             if (member == null)
                 return null;
             var param = Expression.Parameter(typeof(object), "x");
             var memberAccess = Expression.MakeMemberAccess(Expression.Convert(param, type), member);
             Expression body = memberAccess;
-            if (memberAccess.Type.IsValueType)
+            if (memberAccess.Type.GetTypeInfo().IsValueType)
                 body = Expression.Convert(memberAccess, typeof(object));
 
             var expr = Expression.Lambda<Func<object, object>>(body, param);
             return expr.Compile();
-        }
-
-        class TypeKey : IComparable<TypeKey>
-        {
-            private readonly Type _type;
-
-            public TypeKey(Type type)
-            {
-                _type = type;
-            }
-
-            public int CompareTo(TypeKey other)
-            {
-                return String.CompareOrdinal(_type.AssemblyQualifiedName, other._type.AssemblyQualifiedName);
-            }
         }
 
         #endregion

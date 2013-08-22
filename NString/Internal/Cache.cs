@@ -1,38 +1,50 @@
 ﻿using System;
+using System.Collections.Immutable;
+using System.Threading;
 using JetBrains.Annotations;
 
 namespace NString.Internal
 {
-    class Cache<TKey, TValue> where TKey : IComparable<TKey>
+    class Cache<TKey, TValue>
     {
-        private readonly object _lock = new object();
-        private IBinarySearchTree<TKey, TValue> _tree = AVLTree<TKey, TValue>.Empty;
+        private IImmutableDictionary<TKey, TValue> _cache = ImmutableDictionary.Create<TKey, TValue>();
 
         public TValue GetOrAdd(TKey key, [NotNull] Func<TKey, TValue> valueFactory)
         {
-            if (valueFactory == null) throw new ArgumentNullException("valueFactory");
-            var tree = _tree;
-            var node = tree.Search(key);
-            if (!node.IsEmpty)
-                return node.Value;
+            valueFactory.CheckArgumentNull("valueFactory");
 
-            var value = valueFactory(key);
-            lock (_lock)
+            TValue newValue = default(TValue);
+            bool newValueCreated = false;
+            while (true)
             {
-                // Search again in case the key has been added while we were waiting for the lock
-                tree = _tree;
-                node = tree.Search(key);
-                if (!node.IsEmpty)
-                    return node.Value;
-                tree = tree.Add(key, value);
-                _tree = tree;
+                var oldCache = _cache;
+                TValue value;
+                if (oldCache.TryGetValue(key, out value))
+                    return value;
+
+                // Value not found; create it if necessary
+                if (!newValueCreated)
+                {
+                    newValue = valueFactory(key);
+                    newValueCreated = true;
+                }
+
+                // Add the new value to the cache
+                var newCache = oldCache.Add(key, newValue);
+                if (Interlocked.CompareExchange(ref _cache, newCache, oldCache) == oldCache)
+                {
+                    // Cache successfully written
+                    return newValue;
+                }
+
+                // Failed to write the new cache because another thread
+                // already changed it; try again
             }
-            return value;
         }
 
         public void Clear()
         {
-            _tree = AVLTree<TKey, TValue>.Empty;
+            _cache = _cache.Clear();
         }
     }
 }

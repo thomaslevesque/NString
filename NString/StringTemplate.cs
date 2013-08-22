@@ -3,14 +3,28 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using NString.Internal;
 using NString.Properties;
 
 namespace NString
 {
     /// <summary>
-    /// Represents a string template with named placeholders.
+    /// Provides a string template mechanism with named placeholders that can be used to format objects.
     /// </summary>
+    /// <example><![CDATA[static void Main()
+    /// {
+    ///     var joe = new Person { Name = "Joe", DateOfBirth = new DateTime(1980, 6, 22) };
+    ///     string text = StringTemplate.Format("{Name} was born on {DateOfBirth:D}", joe);
+    ///     Console.WriteLine(text); // Prints "Joe was born on Sunday, 22 June 1980"
+    /// }
+    /// 
+    /// class Person
+    /// {
+    ///     public string Name { get; set; }
+    ///     public DateTime DateOfBirth { get; set; }
+    /// }]]>
+    /// </example>
     /// <remarks>The template syntax is similar to the one used in String.Format, except that indexes are replaced by names.</remarks>
     public class StringTemplate
     {
@@ -31,11 +45,103 @@ namespace NString
         /// Parses the provided string into a StringTemplate instance. Parsed templates are cached, so calling this method twice
         /// with the same argument will return the same StringTemplate instance.
         /// </summary>
-        /// <param name="template"></param>
-        /// <returns></returns>
+        /// <param name="template">string representation of the template</param>
+        /// <returns>A StringTemplate instance that can be used to format objects.</returns>
+        /// <remarks>The template syntax is similar to the one used in String.Format, except that indexes are replaced by names.</remarks>
         public static StringTemplate Parse(string template)
         {
             return GetTemplate(template);
+        }
+
+        /// <summary>
+        /// Converts a string to a StringTemplate.
+        /// </summary>
+        /// <param name="s">The string to convert</param>
+        /// <returns>A StringTemplate using the converted string</returns>
+        public static implicit operator StringTemplate(string s)
+        {
+            return GetTemplate(s);
+        }
+
+        /// <summary>
+        /// Returns a string representation of this StringTemplate.
+        /// </summary>
+        /// <returns>The string representation of this StringTemplate</returns>
+        public override string ToString()
+        {
+            return _template;
+        }
+
+        /// <summary>
+        /// Replaces the template's placeholders with the values from the specified dictionary.
+        /// </summary>
+        /// <param name="values">A dictionary containing values for each placeholder in the template</param>
+        /// <param name="throwOnMissingValue">Indicates whether or not to throw an exception if a value is missing for a placeholder.
+        /// If this parameter is false and no value is found, the placeholder is left as is in the formatted string.</param>
+        /// <returns>The formatted string</returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
+        public string Format(IDictionary<string, object> values, bool throwOnMissingValue = true)
+        {
+            values.CheckArgumentNull("values");
+
+            object[] array = new object[_placeholders.Count];
+            for (int i = 0; i < _placeholders.Count; i++)
+            {
+                string key = _placeholders[i];
+                object value;
+                if (!values.TryGetValue(key, out value))
+                {
+                    if (throwOnMissingValue)
+                        throw new KeyNotFoundException(string.Format(Resources.TemplateKeyNotFound, key));
+                    value = string.Format("{{{0}}}", key);
+                }
+                array[i] = value;
+            }
+            return string.Format(_templateWithIndexes, array);
+        }
+
+        /// <summary>
+        /// Replaces the template's placeholders with the values from the specified object.
+        /// </summary>
+        /// <param name="values">An object containing values for the placeholders. For each placeholder, this method looks for a
+        /// corresponding property of field in this object.</param>
+        /// <param name="throwOnMissingValue">Indicates whether or not to throw an exception if a value is missing for a placeholder.
+        /// If this parameter is false and no value is found, the placeholder is left as is in the formatted string.</param>
+        /// <returns>The formatted string</returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
+        public string Format(object values, bool throwOnMissingValue = true)
+        {
+            values.CheckArgumentNull("values");
+            return Format(MakeDictionary(values), throwOnMissingValue);
+        }
+
+        /// <summary>
+        /// Replaces the specified template's placeholders with the values from the specified dictionary.
+        /// </summary>
+        /// <param name="template">The template to use to format the values.</param>
+        /// <param name="values">A dictionary containing values for each placeholder in the template</param>
+        /// <param name="throwOnMissingValue">Indicates whether or not to throw an exception if a value is missing for a placeholder.
+        /// If this parameter is false and no value is found, the placeholder is left as is in the formatted string.</param>
+        /// <returns>The formatted string</returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
+        public static string Format(string template, IDictionary<string, object> values, bool throwOnMissingValue = true)
+        {
+            return GetTemplate(template).Format(values, throwOnMissingValue);
+        }
+
+        /// <summary>
+        /// Replaces the specified template's placeholders with the values from the specified object.
+        /// </summary>
+        /// <param name="template">The template to use to format the values.</param>
+        /// <param name="values">An object containing values for the placeholders. For each placeholder, this method looks for a
+        /// corresponding property of field in this object.</param>
+        /// <param name="throwOnMissingValue">Indicates whether or not to throw an exception if a value is missing for a placeholder.
+        /// If this parameter is false and no value is found, the placeholder is left as is in the formatted string.</param>
+        /// <returns>The formatted string</returns>
+        /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
+        public static string Format(string template, object values, bool throwOnMissingValue = true)
+        {
+            return GetTemplate(template).Format(values, throwOnMissingValue);
         }
 
         private void ParseTemplate(out string templateWithIndexes, out IList<string> placeholders)
@@ -73,101 +179,6 @@ namespace NString
             return string.Empty;
         }
 
-        /// <summary>
-        /// Convertit une chaine en StringTemplate
-        /// </summary>
-        /// <param name="s">La chaine à convertir</param>
-        /// <returns>Un StringTemplate utilisant la chaine convertie comme template</returns>
-        public static implicit operator StringTemplate(string s)
-        {
-            return GetTemplate(s);
-        }
-
-        /// <summary>
-        /// Renvoie une chaine représentant cette instance de StringTemplate.
-        /// </summary>
-        /// <returns>Le template utilisé par ce StringTemplate</returns>
-        public override string ToString()
-        {
-            return _template;
-        }
-
-        /// <summary>
-        /// Remplace les placeholders du template par les valeurs fournies dans le dictionnaire spécifié
-        /// </summary>
-        /// <param name="values">Le dictionnaire contenant les valeurs pour les placeholders</param>
-        /// <returns>La chaine formatée</returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Aucune valeur n'a été trouvée pour
-        /// un placeholder du template</exception>
-        public string Format(IDictionary<string, object> values)
-        {
-            return Format(values, true);
-        }
-
-        /// <summary>
-        /// Remplace les placeholders du template par les valeurs fournies dans le dictionnaire spécifié
-        /// </summary>
-        /// <param name="values">Le dictionnaire contenant les valeurs pour les placeholders</param>
-        /// <param name="throwOnMissingValue">Indique si une exception doit être levée quand aucune valeur
-        /// n'est trouvée pour un placeholder du template. Si ce paramètre vaut false, le placeholder est laissé
-        /// tel quel dans la chaine formatée.</param>
-        /// <returns>La chaine formatée</returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Le paramètre <c>throwOnMissingValue</c>
-        /// vaut true et aucune valeur n'a été trouvée pour un placeholder du template</exception>
-        public string Format(IDictionary<string, object> values, bool throwOnMissingValue)
-        {
-            values.CheckArgumentNull("values");
-
-            object[] array = new object[_placeholders.Count];
-            for (int i = 0; i < _placeholders.Count; i++)
-            {
-                string key = _placeholders[i];
-                object value;
-                if (!values.TryGetValue(key, out value))
-                {
-                    if (throwOnMissingValue)
-                        throw new KeyNotFoundException(string.Format(Resources.TemplateKeyNotFound, key));
-                    value = string.Format("{{{0}}}", key);
-                }
-                array[i] = value;
-            }
-            return string.Format(_templateWithIndexes, array);
-        }
-
-        /// <summary>
-        /// Remplace les placeholders du template par les valeurs fournies dans l'objet spécifié
-        /// </summary>
-        /// <param name="values">L'objet contenant les valeurs pour les placeholders. Chaque propriété de
-        /// l'objet correspond à un placeholder du template</param>
-        /// <returns>La chaine formatée</returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Aucune valeur n'a été trouvée pour
-        /// un placeholder du template</exception>
-        /// <remarks>Cette méthode s'utilise typiquement avec un objet de type anonyme, créé avec la syntaxe
-        /// <c>new { nom1 = valeur1, nom2 = valeur2 }</c></remarks>
-        public string Format(object values)
-        {
-            return Format(values, true);
-        }
-
-        /// <summary>
-        /// Remplace les placeholders du template par les valeurs fournies dans l'objet spécifié
-        /// </summary>
-        /// <param name="values">L'objet contenant les valeurs pour les placeholders. Chaque propriété de
-        /// l'objet correspond à un placeholder du template</param>
-        /// <param name="throwOnMissingValue">Indique si une exception doit être levée quand aucune valeur
-        /// n'est trouvée pour un placeholder du template. Si ce paramètre vaut false, le placeholder est laissé
-        /// tel quel dans la chaine formatée.</param>
-        /// <returns>La chaine formatée</returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Le paramètre <c>throwOnMissingValue</c>
-        /// vaut true et aucune valeur n'a été trouvée pour un placeholder du template</exception>
-        /// <remarks>Cette méthode s'utilise typiquement avec un objet de type anonyme, créé avec la syntaxe
-        /// <c>new { nom1 = valeur1, nom2 = valeur2 }</c></remarks>
-        public string Format(object values, bool throwOnMissingValue)
-        {
-            values.CheckArgumentNull("values");
-            return Format(MakeDictionary(values), throwOnMissingValue);
-        }
-
         private IDictionary<string, object> MakeDictionary(object obj)
         {
             Dictionary<string, object> dict = new Dictionary<string, object>();
@@ -193,103 +204,23 @@ namespace NString
             return false;
         }
 
-        /// <summary>
-        /// Remplace les placeholders du template spécifié par les valeurs fournies dans le dictionnaire spécifié
-        /// </summary>
-        /// <param name="template">Le template à utiliser</param>
-        /// <param name="values">Le dictionnaire contenant les valeurs pour les placeholders</param>
-        /// <returns>La chaine formatée</returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Aucune valeur n'a été trouvée pour
-        /// un placeholder du template</exception>
-        public static string Format(string template, IDictionary<string, object> values)
-        {
-            return GetTemplate(template).Format(values);
-        }
-
-        /// <summary>
-        /// Remplace les placeholders du template spécifié par les valeurs fournies dans le dictionnaire spécifié
-        /// </summary>
-        /// <param name="template">Le template à utiliser</param>
-        /// <param name="values">Le dictionnaire contenant les valeurs pour les placeholders</param>
-        /// <param name="throwOnMissingValue">Indique si une exception doit être levée quand aucune valeur
-        /// n'est trouvée pour un placeholder du template. Si ce paramètre vaut false, le placeholder est laissé
-        /// tel quel dans la chaine formatée.</param>
-        /// <returns>La chaine formatée</returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Le paramètre <c>throwOnMissingValue</c>
-        /// vaut true et aucune valeur n'a été trouvée pour un placeholder du template</exception>
-        public static string Format(string template, IDictionary<string, object> values, bool throwOnMissingValue)
-        {
-            return GetTemplate(template).Format(values, throwOnMissingValue);
-        }
-
-        /// <summary>
-        /// Remplace les placeholders du template par les valeurs fournies dans l'objet spécifié
-        /// </summary>
-        /// <param name="template">Le template à utiliser</param>
-        /// <param name="values">L'objet contenant les valeurs pour les placeholders. Chaque placeholder du
-        /// template est remplacé par la valeur de la propriété ou du champ de même nom</param>
-        /// <returns>La chaine formatée</returns>
-        /// <remarks>Cette méthode s'utilise typiquement avec un objet de type anonyme, créé avec la syntaxe
-        /// <c>new { nom1 = valeur1, nom2 = valeur2 }</c></remarks>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Aucune valeur n'a été trouvée pour
-        /// un placeholder du template</exception>
-        public static string Format(string template, object values)
-        {
-            return GetTemplate(template).Format(values);
-        }
-
-        /// <summary>
-        /// Remplace les placeholders du template par les valeurs fournies dans l'objet spécifié
-        /// </summary>
-        /// <param name="template">Le template à utiliser</param>
-        /// <param name="values">L'objet contenant les valeurs pour les placeholders. Chaque placeholder du
-        /// template est remplacé par la valeur de la propriété ou du champ de même nom</param>
-        /// <param name="throwOnMissingValue">Indique si une exception doit être levée quand aucune valeur
-        /// n'est trouvée pour un placeholder du template. Si ce paramètre vaut false, le placeholder est laissé
-        /// tel quel dans la chaine formatée.</param>
-        /// <returns>La chaine formatée</returns>
-        /// <remarks>Cette méthode s'utilise typiquement avec un objet de type anonyme, créé avec la syntaxe
-        /// <c>new { nom1 = valeur1, nom2 = valeur2 }</c></remarks>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">Le paramètre <c>throwOnMissingValue</c>
-        /// vaut true et aucune valeur n'a été trouvée pour un placeholder du template</exception>
-        public static string Format(string template, object values, bool throwOnMissingValue)
-        {
-            return GetTemplate(template).Format(values, throwOnMissingValue);
-        }
-
         #region Cache
 
-        private static readonly Dictionary<string, StringTemplate> _templateCache =
-            new Dictionary<string, StringTemplate>();
+        private static readonly Cache<string, StringTemplate> _templateCache = new Cache<string, StringTemplate>();
 
-        private static StringTemplate GetTemplate(string template)
+        private static StringTemplate GetTemplate([NotNull] string template)
         {
-            StringTemplate stringTemplate;
-            if (!_templateCache.TryGetValue(template, out stringTemplate))
-            {
-                stringTemplate = new StringTemplate(template);
-                _templateCache[template] = stringTemplate;
-            }
-            return stringTemplate;
+            if (template == null) throw new ArgumentNullException("template");
+            return _templateCache.GetOrAdd(template, t => new StringTemplate(t));
         }
 
-        private static readonly Dictionary<Type, Dictionary<string, Func<object, object>>> _gettersCache =
-            new Dictionary<Type, Dictionary<string, Func<object, object>>>();
+        private static readonly Cache<TypeKey, Cache<string, Func<object, object>>> _gettersCache =
+            new Cache<TypeKey, Cache<string, Func<object, object>>>();
 
         private static Func<object, object> GetGetterFromCache(Type type, string memberName)
         {
-            Dictionary<string, Func<object, object>> typeGetters;
-            if (!_gettersCache.TryGetValue(type, out typeGetters))
-            {
-                typeGetters = new Dictionary<string, Func<object, object>>();
-                _gettersCache[type] = typeGetters;
-            }
-            Func<object, object> getter;
-            if (!typeGetters.TryGetValue(memberName, out getter))
-            {
-                getter = CreateGetter(type, memberName);
-                typeGetters[memberName] = getter;
-            }
+            var typeGetters = _gettersCache.GetOrAdd(new TypeKey(type), typeKey => new Cache<string, Func<object, object>>());
+            var getter = typeGetters.GetOrAdd(memberName, name => CreateGetter(type, name));
             return getter;
         }
 
@@ -322,6 +253,21 @@ namespace NString
 
             var expr = Expression.Lambda<Func<object, object>>(body, param);
             return expr.Compile();
+        }
+
+        class TypeKey : IComparable<TypeKey>
+        {
+            private readonly Type _type;
+
+            public TypeKey(Type type)
+            {
+                _type = type;
+            }
+
+            public int CompareTo(TypeKey other)
+            {
+                return String.CompareOrdinal(_type.AssemblyQualifiedName, other._type.AssemblyQualifiedName);
+            }
         }
 
         #endregion

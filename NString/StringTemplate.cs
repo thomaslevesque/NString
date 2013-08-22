@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using JetBrains.Annotations;
 using NString.Internal;
 using NString.Properties;
 
@@ -212,7 +211,7 @@ namespace NString
 
         private static readonly Cache<string, StringTemplate> _templateCache = new Cache<string, StringTemplate>();
 
-        private static StringTemplate GetTemplate([NotNull] string template)
+        private static StringTemplate GetTemplate(string template)
         {
             if (template == null) throw new ArgumentNullException("template");
             return _templateCache.GetOrAdd(template, () => new StringTemplate(template));

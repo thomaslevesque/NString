@@ -62,6 +62,42 @@ namespace NString.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to maxLength can&apos;t be less than {0}..
+        /// </summary>
+        internal static string MaxLengthCantBeLessThan {
+            get {
+                return ResourceManager.GetString("MaxLengthCantBeLessThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to maxLength can&apos;t be less than the length of ellipsisString..
+        /// </summary>
+        internal static string MaxLengthCantBeLessThanLengthOfEllipsisString {
+            get {
+                return ResourceManager.GetString("MaxLengthCantBeLessThanLengthOfEllipsisString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must be greater than or equal to zero..
+        /// </summary>
+        internal static string NumberMustBePositiveOrZero {
+            get {
+                return ResourceManager.GetString("NumberMustBePositiveOrZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of characters must be greater than or equal to zero, and less than or equal to the length of the string..
+        /// </summary>
+        internal static string SubstringCountOutOfRange {
+            get {
+                return ResourceManager.GetString("SubstringCountOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No value found for key &apos;{0}&apos;..
         /// </summary>
         internal static string TemplateKeyNotFound {

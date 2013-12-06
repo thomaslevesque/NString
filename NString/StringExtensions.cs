@@ -124,7 +124,7 @@ namespace NString
         }
 
         /// <summary>
-        /// Capitalizes the string by making its first character uppercase.
+        /// Capitalizes a string by making its first character uppercase.
         /// </summary>
         /// <param name="s">The string to capitalize.</param>
         /// <param name="culture">The culture to use when making the first character uppercase. If null, the current culture is used.</param>
@@ -271,7 +271,7 @@ namespace NString
         }
 
         /// <summary>
-        /// Replaces the character at the specified position with the specified replacement character.
+        /// Replaces a single character at the specified position with the specified replacement character.
         /// </summary>
         /// <param name="s">The string in which a character will be replaced.</param>
         /// <param name="index">The position of the character to replace.</param>

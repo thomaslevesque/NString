@@ -147,6 +147,14 @@ namespace NString
             return GetTemplate(template).Format(values, throwOnMissingValue, formatProvider);
         }
 
+        /// <summary>
+        /// Clears the cached templates
+        /// </summary>
+        public static void ClearCache()
+        {
+            _templateCache.Clear();
+        }
+
         private void ParseTemplate(out string templateWithIndexes, out IList<string> placeholders)
         {
             var tmp = new List<string>();

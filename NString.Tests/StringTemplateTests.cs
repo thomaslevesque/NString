@@ -1,15 +1,15 @@
 ﻿using System.Globalization;
+using NUnit.Framework;
 // ReSharper disable InconsistentNaming
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace NString.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class StringTemplateTests
     {
-        [TestMethod]
+        [Test]
         public void Check_Format()
         {
             string name = "Zobi la mouche";
@@ -38,21 +38,21 @@ namespace NString.Tests
             Assert.AreEqual(result0, result2);
         }
 
-        [TestMethod]
+        [Test]
         public void Should_Raise_Exception_When_Called_With_Null_Template()
         {
             ExceptionAssert.Throws<ArgumentNullException>(
                 () => StringTemplate.Format(null, ""));
         }
 
-        [TestMethod]
+        [Test]
         public void Should_Raise_Exception_When_Called_With_Null_Values()
         {
             ExceptionAssert.Throws<ArgumentNullException>(
                 () => StringTemplate.Format("Bonjour {0}.", null));
         }
 
-        [TestMethod]
+        [Test]
         public void Format_Should_Throw_When_No_Matching_Value_Exists()
         {
             string format = "Bonjour {Name}";
@@ -74,21 +74,21 @@ namespace NString.Tests
             Assert.AreEqual(StringTemplate.Format(format, values2, false), format);
         }
 
-        [TestMethod]
+        [Test]
         public void ToString_Should_Return_Template()
         {
             StringTemplate testStringTemplate = StringTemplate.Parse("test");
             Assert.AreEqual("test", testStringTemplate.ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void Implicit_Operator()
         {
             StringTemplate testStringTemplate = "test";
             Assert.AreEqual("test", testStringTemplate.ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void Test_BracesAreEscaped()
         {
             var values1 = new object[] { "World" };
@@ -114,7 +114,7 @@ namespace NString.Tests
                 () => s2 = StringTemplate.Format("Hello {{{Name}} !", values2));
         }
 
-        [TestMethod]
+        [Test]
         public void Test_WithFields()
         {
             int x = 42;
@@ -126,7 +126,7 @@ namespace NString.Tests
             Assert.AreEqual(expected, actual);
         }
 
-        [TestMethod]
+        [Test]
         public void Test_HiddenMembers()
         {
             DerivedValues values = new DerivedValues { X = "hello", Y = 42 };
@@ -139,7 +139,7 @@ namespace NString.Tests
             Assert.AreEqual(expected, actual);
         }
 
-        [TestMethod]
+        [Test]
         public void Test_CachedTemplate()
         {
             var t1 = StringTemplate.Parse("{X}");
@@ -148,7 +148,17 @@ namespace NString.Tests
             Assert.AreSame(t1, t2);
         }
 
-        [TestMethod]
+        [Test]
+        public void Test_ClearCached()
+        {
+            var t1 = StringTemplate.Parse("{X}");
+            StringTemplate.ClearCache();
+            var t2 = StringTemplate.Parse("{X}");
+
+            Assert.AreNotSame(t1, t2);
+        }
+
+        [Test]
         public void Test_WithFormatProvider()
         {
             var date = DateTime.Today;

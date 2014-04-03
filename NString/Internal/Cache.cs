@@ -38,7 +38,18 @@ namespace NString.Internal
 
         public void Clear()
         {
-            _cache = _cache.Clear();
+            while (true)
+            {
+                var oldCache = _cache;
+                var newCache = _cache.Clear();
+                if (Interlocked.CompareExchange(ref _cache, newCache, oldCache) == oldCache)
+                {
+                    // Cache successfully written
+                    return;
+                }
+                // Failed to write the new cache because another thread
+                // already changed it; try again
+            }
         }
     }
 }

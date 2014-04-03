@@ -231,7 +231,7 @@ namespace NString
             s.CheckArgumentNull("s");
             ellipsisString.CheckArgumentNull("ellipsisString");
             if (maxLength < ellipsisString.Length)
-                throw new ArgumentException(Resources.MaxLengthCantBeLessThanLengthOfEllipsisString);
+                throw new ArgumentOutOfRangeException(Resources.MaxLengthCantBeLessThanLengthOfEllipsisString);
 
             if (s.Length <= maxLength)
                 return s;

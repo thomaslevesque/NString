@@ -11,6 +11,7 @@ namespace NString.Tests.StringExtensionsTests
         public void Ellipsis_Throws_If_Input_Is_Null()
         {
             const string s = null;
+            // ReSharper disable once AssignNullToNotNullAttribute
             s.Ellipsis(10);
         }
 
@@ -19,6 +20,7 @@ namespace NString.Tests.StringExtensionsTests
         public void Ellipsis_With_Custom_Ellipsis_String_Throws_If_Input_Is_Null()
         {
             const string s = null;
+            // ReSharper disable once AssignNullToNotNullAttribute
             s.Ellipsis(10, "-----");
         }
 

@@ -11,6 +11,7 @@ namespace NString.Tests.StringExtensionsTests
         public void MatchesWildcard_Throws_If_Input_Is_Null()
         {
             const string s = null;
+            // ReSharper disable once AssignNullToNotNullAttribute
             s.MatchesWildcard("*");
         }
 

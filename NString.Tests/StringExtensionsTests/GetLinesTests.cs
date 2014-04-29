@@ -11,6 +11,7 @@ namespace NString.Tests.StringExtensionsTests
         public void GetLines_Throws_If_String_Is_Null()
         {
             const string s = null;
+            // ReSharper disable once AssignNullToNotNullAttribute
             ExceptionAssert.Throws<ArgumentNullException>(() => s.GetLines());
         }
 

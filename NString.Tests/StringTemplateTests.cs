@@ -42,6 +42,7 @@ namespace NString.Tests
         public void Should_Raise_Exception_When_Called_With_Null_Template()
         {
             ExceptionAssert.Throws<ArgumentNullException>(
+                // ReSharper disable once AssignNullToNotNullAttribute
                 () => StringTemplate.Format(null, ""));
         }
 
@@ -49,6 +50,7 @@ namespace NString.Tests
         public void Should_Raise_Exception_When_Called_With_Null_Values()
         {
             ExceptionAssert.Throws<ArgumentNullException>(
+                // ReSharper disable once AssignNullToNotNullAttribute
                 () => StringTemplate.Format("Bonjour {0}.", null));
         }
 

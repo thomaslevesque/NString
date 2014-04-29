@@ -10,6 +10,7 @@ namespace NString.Tests.StringExtensionsTests
         public void Right_Throws_If_String_Is_Null()
         {
             const string s = null;
+            // ReSharper disable once AssignNullToNotNullAttribute
             ExceptionAssert.Throws<ArgumentNullException>(() => s.Right(2));
         }
 

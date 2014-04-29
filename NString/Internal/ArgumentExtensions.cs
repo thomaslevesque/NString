@@ -16,7 +16,7 @@ namespace NString.Internal
         }
 
         public static void CheckArgumentOutOfRange<T>(
-            this T value,
+            [NotNull] this T value,
             [InvokerParameterName] string paramName,
             T min,
             T max)
@@ -27,7 +27,7 @@ namespace NString.Internal
         }
 
         public static void CheckArgumentOutOfRange<T>(
-            this T value,
+            [NotNull] this T value,
             [InvokerParameterName] string paramName,
             T min,
             T max,

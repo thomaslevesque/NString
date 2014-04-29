@@ -11,6 +11,7 @@ namespace NString.Tests.StringExtensionsTests
         public void Contains_Throws_If_Input_Is_Null()
         {
             const string input = null;
+            // ReSharper disable once AssignNullToNotNullAttribute
             input.Contains("", StringComparison.CurrentCultureIgnoreCase);
         }
 

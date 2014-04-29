@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace NString.Tests.StringExtensionsTests
@@ -15,6 +11,7 @@ namespace NString.Tests.StringExtensionsTests
         public void IsValidEmail_Throws_If_Input_Is_Null()
         {
             const string input = null;
+            // ReSharper disable once AssignNullToNotNullAttribute
             input.IsValidEmail();
         }
 

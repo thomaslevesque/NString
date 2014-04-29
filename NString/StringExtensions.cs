@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using NString.Internal;
 using NString.Properties;
 
@@ -45,7 +46,7 @@ namespace NString
         /// <param name="separator">The string to use as a separator. separator is included in the returned string only if values has more than one element.</param>
         /// <exception cref="ArgumentNullException">values is null.</exception>
         /// <returns>A string that consists of the members of values delimited by the separator string. If values has no members, the method returns String.Empty.</returns>
-        public static string Join(this IEnumerable<string> values, string separator = null)
+        public static string Join([NotNull] this IEnumerable<string> values, string separator = null)
         {
             values.CheckArgumentNull("values");
             return string.Join(separator, values);
@@ -57,7 +58,7 @@ namespace NString
         /// <param name="s">The string whose lines are to be enumerated.</param>
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <returns>An enumerable sequence of lines in this string.</returns>
-        public static IEnumerable<string> GetLines(this string s)
+        public static IEnumerable<string> GetLines([NotNull] this string s)
         {
             s.CheckArgumentNull("s");
             return GetLinesIterator(s);
@@ -83,7 +84,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">count is less than 0 or greater than the length of the string.</exception>
         /// <returns>A string containing a specified number of characters from the left side of a string.</returns>
-        public static string Left(this string s, int count)
+        public static string Left([NotNull] this string s, int count)
         {
             s.CheckArgumentNull("s");
             count.CheckArgumentOutOfRange("count", 0, s.Length, Resources.SubstringCountOutOfRange);
@@ -98,7 +99,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">count is less than 0 or greater than the length of the string.</exception>
         /// <returns>A string containing a specified number of characters from the right side of a string.</returns>
-        public static string Right(this string s, int count)
+        public static string Right([NotNull] this string s, int count)
         {
             s.CheckArgumentNull("s");
             count.CheckArgumentOutOfRange("count", 0, s.Length, Resources.SubstringCountOutOfRange);
@@ -113,7 +114,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">count is less than 0.</exception>
         /// <returns>A string tuncated to the specified number of characters.</returns>
-        public static string Truncate(this string s, int count)
+        public static string Truncate([NotNull] this string s, int count)
         {
             s.CheckArgumentNull("s");
             count.CheckArgumentOutOfRange("count", 0, int.MaxValue,
@@ -130,7 +131,7 @@ namespace NString
         /// <param name="culture">The culture to use when making the first character uppercase. If null, the current culture is used.</param>
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <returns>The capitalized string.</returns>
-        public static string Capitalize(this string s, CultureInfo culture = null)
+        public static string Capitalize([NotNull] this string s, CultureInfo culture = null)
         {
             s.CheckArgumentNull("s");
             culture = culture ?? CultureInfo.CurrentCulture;
@@ -155,7 +156,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s or pattern is null.</exception>
         /// <returns>true if the string matches the pattern; otherwise, false.</returns>
         /// <remarks>The pattern can contain wildcards such as '*' (any number of characters) or '?' (exactly one character).</remarks>
-        public static bool MatchesWildcard(this string s, string pattern)
+        public static bool MatchesWildcard([NotNull] this string s, string pattern)
         {
             s.CheckArgumentNull("s");
             pattern.CheckArgumentNull("pattern");
@@ -209,7 +210,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">maxLength is less than 3.</exception>
         /// <returns>The truncated string.</returns>
-        public static string Ellipsis(this string s, int maxLength)
+        public static string Ellipsis([NotNull] this string s, int maxLength)
         {
             const string ellipsisString = "...";
             if (maxLength < ellipsisString.Length)
@@ -226,7 +227,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">maxLength is less than the length of ellipsisString.</exception>
         /// <returns>The truncated string.</returns>
-        public static string Ellipsis(this string s, int maxLength, string ellipsisString)
+        public static string Ellipsis([NotNull] this string s, int maxLength, string ellipsisString)
         {
             s.CheckArgumentNull("s");
             ellipsisString.CheckArgumentNull("ellipsisString");
@@ -247,7 +248,7 @@ namespace NString
         ///<param name="s">The string to check.</param>
         ///<exception cref="ArgumentNullException">s is null.</exception>
         ///<returns>true if the s is a valid email address; otherwise, false.</returns>
-        public static bool IsValidEmail(this string s)
+        public static bool IsValidEmail([NotNull] this string s)
         {
             s.CheckArgumentNull("s");
             return _emailRegex.IsMatch(s);
@@ -262,7 +263,7 @@ namespace NString
         ///<exception cref="ArgumentNullException">s or subString is null.</exception>
         ///<exception cref="ArgumentOutOfRangeException">comparisonType is not a valid StringComparison value.</exception>
         ///<returns>true si <c>s</c> contains <c>subString</c>, or if <c>subString</c> is an empty string; otherwise, false.</returns>
-        public static bool Contains(this string s, string subString, StringComparison comparisonType)
+        public static bool Contains([NotNull] this string s, string subString, StringComparison comparisonType)
         {
             s.CheckArgumentNull("s");
             subString.CheckArgumentNull("subString");
@@ -279,7 +280,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">index doesn't refer to a valid position within the string.</exception>
         /// <returns>The string with the replaced character.</returns>
-        public static string ReplaceAt(this string s, int index, char newChar)
+        public static string ReplaceAt([NotNull] this string s, int index, char newChar)
         {
             s.CheckArgumentNull("s");
             index.CheckArgumentOutOfRange("index", 0, s.Length - 1);

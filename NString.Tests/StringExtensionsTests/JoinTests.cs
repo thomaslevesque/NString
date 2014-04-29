@@ -11,6 +11,7 @@ namespace NString.Tests.StringExtensionsTests
         public void Join_Throws_If_Values_Is_Null()
         {
             const IEnumerable<string> values = null;
+            // ReSharper disable once AssignNullToNotNullAttribute
             ExceptionAssert.Throws<ArgumentNullException>(() => values.Join(" "));
         }
 

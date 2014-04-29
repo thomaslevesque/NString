@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using NString.Internal;
 using NString.Properties;
 
@@ -47,7 +48,7 @@ namespace NString
         /// <param name="template">string representation of the template</param>
         /// <returns>A StringTemplate instance that can be used to format objects.</returns>
         /// <remarks>The template syntax is similar to the one used in String.Format, except that indexes are replaced by names.</remarks>
-        public static StringTemplate Parse(string template)
+        public static StringTemplate Parse([NotNull] string template)
         {
             return GetTemplate(template);
         }
@@ -57,8 +58,9 @@ namespace NString
         /// </summary>
         /// <param name="s">The string to convert</param>
         /// <returns>A StringTemplate using the converted string</returns>
-        public static implicit operator StringTemplate(string s)
+        public static implicit operator StringTemplate([NotNull] string s)
         {
+            s.CheckArgumentNull("s");
             return GetTemplate(s);
         }
 
@@ -80,7 +82,7 @@ namespace NString
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public string Format(IDictionary<string, object> values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
+        public string Format([NotNull] IDictionary<string, object> values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
         {
             values.CheckArgumentNull("values");
 
@@ -110,7 +112,7 @@ namespace NString
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public string Format(object values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
+        public string Format([NotNull] object values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
         {
             values.CheckArgumentNull("values");
             return Format(MakeDictionary(values), throwOnMissingValue, formatProvider);
@@ -126,7 +128,7 @@ namespace NString
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public static string Format(string template, IDictionary<string, object> values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
+        public static string Format([NotNull] string template, [NotNull] IDictionary<string, object> values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
         {
             return GetTemplate(template).Format(values, throwOnMissingValue, formatProvider);
         }
@@ -142,7 +144,7 @@ namespace NString
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public static string Format(string template, object values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
+        public static string Format([NotNull] string template, [NotNull] object values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
         {
             return GetTemplate(template).Format(values, throwOnMissingValue, formatProvider);
         }
@@ -221,7 +223,7 @@ namespace NString
 
         private static StringTemplate GetTemplate(string template)
         {
-            if (template == null) throw new ArgumentNullException("template");
+            template.CheckArgumentNull("template");
             return _templateCache.GetOrAdd(template, () => new StringTemplate(template));
         }
 

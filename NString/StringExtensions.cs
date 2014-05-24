@@ -153,13 +153,20 @@ namespace NString
         /// </summary>
         /// <param name="s">The string to check.</param>
         /// <param name="pattern">The pattern against which the string is compared.</param>
+        /// <param name="caseSensitive">true to perform a case-sensitive check; otherwise, false. The default is true.</param>
         /// <exception cref="ArgumentNullException">s or pattern is null.</exception>
         /// <returns>true if the string matches the pattern; otherwise, false.</returns>
-        /// <remarks>The pattern can contain wildcards such as '*' (any number of characters) or '?' (exactly one character).</remarks>
-        public static bool MatchesWildcard([NotNull] this string s, string pattern)
+        /// <remarks>The pattern can contain wildcards such as '*' (any number of characters) or '?' (exactly one character).
+        /// This method is not culture-sensitive.</remarks>
+        public static bool MatchesWildcard([NotNull] this string s, string pattern, bool caseSensitive = true)
         {
             s.CheckArgumentNull("s");
             pattern.CheckArgumentNull("pattern");
+            if (!caseSensitive)
+            {
+                s = s.ToUpperInvariant();
+                pattern = pattern.ToUpperInvariant();
+            }
 
             int it = 0;
             while (s.CharAt(it) != 0 &&

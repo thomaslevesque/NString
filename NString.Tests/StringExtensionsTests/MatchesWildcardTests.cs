@@ -53,5 +53,25 @@ namespace NString.Tests.StringExtensionsTests
         {
             Assert.AreEqual(expected, input.MatchesWildcard(pattern));
         }
+
+        [Test]
+        [TestCase("hello world", "HELLO WORLD", true)]
+        [TestCase("hello world", "HELLO *", true)]
+        [TestCase("hello world", "* WORLD", true)]
+        [TestCase("hello world", "HELLO ?????", true)]
+        public void MatchesWildcard_Ignores_Case(string input, string pattern, bool expected)
+        {
+            Assert.AreEqual(expected, input.MatchesWildcard(pattern, false));
+        }
+
+        [Test]
+        [TestCase("hello world", "HELLO WORLD", false)]
+        [TestCase("hello world", "HELLO *", false)]
+        [TestCase("hello world", "* WORLD", false)]
+        [TestCase("hello world", "HELLO ?????", false)]
+        public void MatchesWildcard_Matches_Case(string input, string pattern, bool expected)
+        {
+            Assert.AreEqual(expected, input.MatchesWildcard(pattern));
+        }
     }
 }

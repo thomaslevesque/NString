@@ -3,7 +3,7 @@
    <metadata>
       <!-- Required metadata -->
       <id>NString</id>
-      <version>1.0.0</version>
+      <version>1.1.1</version>
       <title>NString</title>
       <authors>Thomas Levesque</authors>
       <description>A collection of utilities for working with strings in .NET.</description>
@@ -13,6 +13,7 @@
       <projectUrl>https://github.com/thomaslevesque/NString/</projectUrl>
       <tags>string</tags>
      <releaseNotes xml:space="preserve">
+- 1.1.1: fixed lack of support for alignment in placeholders for StringTemplate (#2)
 - 1.1.0: added support for case-insensitive matching in MatchesWildcard (#1)
 - 1.0.2: added Resharper annotations
 - 1.0.1: switched unit tests to NUnit

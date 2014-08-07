@@ -12,7 +12,7 @@ namespace NString.Tests
         [Test]
         public void Check_Format()
         {
-            string name = "Zobi la mouche";
+            string name = "FooBar";
             DateTime date = DateTime.Now;
 
             string format = "Bonjour {0}. Nous sommes le {1:D}, et il est {1:T}.";
@@ -20,7 +20,7 @@ namespace NString.Tests
 
             var values1 = new Dictionary<string, object>
             {
-                { "Name", "Zobi la mouche"},
+                { "Name", name},
                 { "Date", date }
             };
 
@@ -30,12 +30,12 @@ namespace NString.Tests
                 Date = date
             };
 
-            string result0 = String.Format(format, name, date);
+            string expected = String.Format(format, name, date);
             string result1 = StringTemplate.Format(templateFormat, values1);
             string result2 = StringTemplate.Format(templateFormat, values2);
 
-            Assert.AreEqual(result0, result1);
-            Assert.AreEqual(result0, result2);
+            Assert.AreEqual(expected, result1);
+            Assert.AreEqual(expected, result2);
         }
 
         [Test]
@@ -173,6 +173,21 @@ namespace NString.Tests
                 string actual = StringTemplate.Format("{date:D}", new { date }, true, culture);
                 Assert.AreEqual(expected, actual);
             }
+        }
+
+        [Test]
+        public void Format_Should_Accept_Alignment_In_PlaceHolder()
+        {
+            var x = new
+            {
+                Name = "FooBar",
+                Value = 42
+            };
+
+            string expected = string.Format("{0,-10}: {1,10}", x.Name, x.Value);
+            string actual = StringTemplate.Format("{Name,-10}: {Value,10}", x);
+
+            Assert.AreEqual(expected, actual);
         }
 
         // ReSharper disable NotAccessedField.Local

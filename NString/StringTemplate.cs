@@ -28,8 +28,6 @@ namespace NString
     /// <remarks>The template syntax is similar to the one used in String.Format, except that indexes are replaced by names.</remarks>
     public class StringTemplate
     {
-        private static readonly Regex _regex = new Regex(@"(?<open>{+)(?<key>\w+)(?<format>:[^}]+)?(?<close>}+)");
-
         private readonly string _template;
         private readonly string _templateWithIndexes;
         private readonly IList<string> _placeholders;
@@ -157,6 +155,7 @@ namespace NString
             _templateCache.Clear();
         }
 
+        private static readonly Regex _regex = new Regex(@"(?<open>{+)(?<key>\w+)\s*(?<alignment>,\s*-?\d+)\s*?(?<format>:[^}]+)?(?<close>}+)");
         private void ParseTemplate(out string templateWithIndexes, out IList<string> placeholders)
         {
             var tmp = new List<string>();
@@ -165,6 +164,7 @@ namespace NString
                 string open = m.Groups["open"].Value;
                 string close = m.Groups["close"].Value;
                 string key = m.Groups["key"].Value;
+                string alignment = m.Groups["alignment"].Value;
                 string format = m.Groups["format"].Value;
 
                 if (open.Length % 2 == 0)
@@ -179,7 +179,7 @@ namespace NString
                 }
 
                 int index = tmp.IndexOf(key);
-                return string.Format("{0}{{{1}{2}}}{3}", open, index, format, close);
+                return string.Format("{0}{{{1}{2}{3}}}{4}", open, index, alignment, format, close);
             };
             templateWithIndexes = _regex.Replace(_template, evaluator);
             placeholders = tmp.AsReadOnly();

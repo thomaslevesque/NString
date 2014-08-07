@@ -14,6 +14,7 @@
       <tags>string</tags>
      <releaseNotes xml:space="preserve">
 - 1.1.1: fixed lack of support for alignment in placeholders for StringTemplate (#2)
+         updated to target Windows Phone 8.1 as well
 - 1.1.0: added support for case-insensitive matching in MatchesWildcard (#1)
 - 1.0.2: added Resharper annotations
 - 1.0.1: switched unit tests to NUnit

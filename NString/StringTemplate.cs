@@ -155,7 +155,7 @@ namespace NString
             _templateCache.Clear();
         }
 
-        private static readonly Regex _regex = new Regex(@"(?<open>{+)(?<key>\w+)\s*(?<alignment>,\s*-?\d+)\s*?(?<format>:[^}]+)?(?<close>}+)");
+        private static readonly Regex _regex = new Regex(@"(?<open>{+)(?<key>\w+)\s*(?<alignment>,\s*-?\d+)?\s*(?<format>:[^}]+)?(?<close>}+)");
         private void ParseTemplate(out string templateWithIndexes, out IList<string> placeholders)
         {
             var tmp = new List<string>();

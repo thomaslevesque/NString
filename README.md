@@ -48,8 +48,10 @@ public string IndentAllLines(string text, string indent = "    ")
 
 Returns a string containing a specified number of characters from the left or right side of a string. These methods are shortcuts for common use cases of `Substring`, and behave in the same way (so they will throw if you try to get more characters than the length of the string).
 
+```csharp
 "hello".Left(2) // "he"
 "hello".Right(3) // "llo"
+```
 
 ### Truncate
 

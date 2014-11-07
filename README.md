@@ -72,7 +72,7 @@ Capitalizes a string by making its first character uppercase.
 
 ### MatchesWildcard
 
-Checks if a string matches the specified wildcard pattern (supports '*' for any number of characters, and '?' for exactly one character).
+Checks if a string matches the specified wildcard pattern (supports `*` for any number of characters, and `?` for exactly one character).
 
 ```csharp
 if (fileName.MatchesWildCard("foobar.*.log"))

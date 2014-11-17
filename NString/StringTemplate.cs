@@ -148,11 +148,12 @@ namespace NString
         }
 
         /// <summary>
-        /// Clears the cached templates
+        /// Clears the cached templates and property getters.
         /// </summary>
         public static void ClearCache()
         {
             _templateCache.Clear();
+            _gettersCache.Clear();
         }
 
         private static readonly Regex _regex = new Regex(@"(?<open>{+)(?<key>\w+)\s*(?<alignment>,\s*-?\d+)?\s*(?<format>:[^}]+)?(?<close>}+)");

@@ -22,6 +22,7 @@ namespace NString
         /// <returns>true if the value parameter is null or an empty string (""); otherwise, false.</returns>
         /// <remarks>This is just a shortcut for <see cref="String.IsNullOrEmpty"/>, allowing it to be used as an extension method.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [ContractAnnotation("s:null=>true")]
         public static bool IsNullOrEmpty(this string s)
         {
             return string.IsNullOrEmpty(s);
@@ -34,6 +35,7 @@ namespace NString
         /// <returns>true if the value parameter is null or String.Empty, or ifvalue consists exclusively of white-space characters.</returns>
         /// <remarks>This is just a shortcut for <see cref="String.IsNullOrWhiteSpace"/>, allowing it to be used as an extension method.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [ContractAnnotation("s:null=>true")]
         public static bool IsNullOrWhiteSpace(this string s)
         {
             return string.IsNullOrWhiteSpace(s);

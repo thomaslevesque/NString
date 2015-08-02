@@ -1,0 +1,98 @@
+///////////////////////////////////////////////////////////////////////////////
+// ARGUMENTS
+///////////////////////////////////////////////////////////////////////////////
+
+var target = Argument<string>("target", "Default");
+var configuration = Argument<string>("configuration", "Release");
+
+// Variable definitions
+
+var projectName = "NString";
+var solutionFile = $"./{projectName}.sln";
+var outDir = $"./{projectName}/bin/{configuration}";
+
+var unitTestAssemblies = new[] { $"{projectName}.Tests/bin/{configuration}/{projectName}.Tests.dll" };
+
+var nuspecFile = $"./NuGet/{projectName}.nuspec";
+var nugetDir = $"./NuGet/{configuration}";
+var nupkgDir = $"{nugetDir}/nupkg";
+var nugetTargets = new[] { $"dotnet", $"portable-net45+win8+wpa81+wp8" };
+var nugetFiles = new[] { $"{projectName}.dll", $"{projectName}.xml" };
+
+///////////////////////////////////////////////////////////////////////////////
+// SETUP / TEARDOWN
+///////////////////////////////////////////////////////////////////////////////
+
+Setup(() =>
+{
+    // Executed BEFORE the first task.
+    Information("Running tasks...");
+});
+
+Teardown(() =>
+{
+    // Executed AFTER the last task.
+    Information("Finished running tasks.");
+});
+
+///////////////////////////////////////////////////////////////////////////////
+// TASK DEFINITIONS
+///////////////////////////////////////////////////////////////////////////////
+
+Task("Clean")
+    .Does(() =>
+{
+    CleanDirectory(outDir);
+    CleanDirectory(nugetDir);
+});
+
+Task("Build")
+    .IsDependentOn("Clean")
+    .Does(() =>
+{
+    MSBuild(solutionFile,
+        settings => settings.SetConfiguration(configuration));
+});
+
+Task("Test")
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+    NUnit(unitTestAssemblies);
+});
+
+Task("Pack")
+    .IsDependentOn("Test")
+    .Does(() =>
+{
+    
+    CreateDirectory(nupkgDir);
+    foreach (var target in nugetTargets)
+    {
+        string targetDir = $"{nupkgDir}/lib/{target}";
+        CreateDirectory(targetDir);
+        foreach (var file in nugetFiles)
+        {
+            CopyFileToDirectory($"{outDir}/{file}", targetDir);
+        }
+    }
+    var packSettings = new NuGetPackSettings
+    {
+        BasePath = nupkgDir,
+        OutputDirectory = nugetDir
+    };
+    NuGetPack(nuspecFile, packSettings);
+});
+
+///////////////////////////////////////////////////////////////////////////////
+// TARGETS
+///////////////////////////////////////////////////////////////////////////////
+
+Task("Default")
+    .IsDependentOn("Test");
+
+///////////////////////////////////////////////////////////////////////////////
+// EXECUTION
+///////////////////////////////////////////////////////////////////////////////
+
+RunTarget(target);

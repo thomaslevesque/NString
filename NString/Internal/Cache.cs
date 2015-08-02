@@ -11,7 +11,7 @@ namespace NString.Internal
 
         public TValue GetOrAdd(TKey key, [NotNull] Func<TValue> valueFactory)
         {
-            valueFactory.CheckArgumentNull("valueFactory");
+            valueFactory.CheckArgumentNull(nameof(valueFactory));
 
             Lazy<TValue> newValue = new Lazy<TValue>(valueFactory);
 

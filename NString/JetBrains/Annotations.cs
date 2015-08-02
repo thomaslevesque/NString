@@ -1,14 +1,7 @@
 ﻿using System;
 
 #pragma warning disable 1591
-// ReSharper disable UnusedMember.Global
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable IntroduceOptionalParameters.Global
-// ReSharper disable MemberCanBeProtected.Global
-// ReSharper disable InconsistentNaming
-
-// ReSharper disable once CheckNamespace
+// ReSharper disable All
 namespace JetBrains.Annotations
 {
     /// <summary>

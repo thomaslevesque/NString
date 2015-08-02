@@ -10,8 +10,10 @@ namespace NString.Tests.StringExtensionsTests
         {
             const string s = null;
             const bool expected = true;
+            // ReSharper disable ConditionIsAlwaysTrueOrFalse
             bool actual = s.IsNullOrWhiteSpace();
             Assert.AreEqual(expected, actual);
+            // ReSharper restore ConditionIsAlwaysTrueOrFalse
         }
 
         [Test]

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using JetBrains.Annotations;
 using NUnit.Framework;
 // ReSharper disable InconsistentNaming
 using System;
@@ -99,9 +100,8 @@ namespace NString.Tests
             string s = StringTemplate.Format("Hello {{Name}} !", values2);
             Assert.AreEqual("Hello {Name} !", s);
 
-            string s1, s2;
-            s1 = String.Format("Hello {{{0}}} !", values1);
-            s2 = StringTemplate.Format("Hello {{{Name}}} !", values2);
+            var s1 = String.Format("Hello {{{0}}} !", values1);
+            var s2 = StringTemplate.Format("Hello {{{Name}}} !", values2);
             Assert.AreEqual(s1, s2);
 
             s1 = String.Format("Hello {{{0} !", values1);
@@ -122,7 +122,7 @@ namespace NString.Tests
             int x = 42;
             string text = "Hello world";
 
-            string expected = string.Format("{0} {1}", text, x);
+            string expected = $"{text} {x}";
             string actual = StringTemplate.Format("{text} {x}", new FieldValues { x = x, text = text });
 
             Assert.AreEqual(expected, actual);
@@ -135,7 +135,7 @@ namespace NString.Tests
             BaseValues bValues = values;
             bValues.X = 42;
 
-            string expected = string.Format("{0} {1}", values.X, values.Y);
+            string expected = $"{values.X} {values.Y}";
             string actual = StringTemplate.Format("{X} {Y}", values);
 
             Assert.AreEqual(expected, actual);
@@ -184,13 +184,14 @@ namespace NString.Tests
                 Value = 42
             };
 
-            string expected = string.Format("{0,-10}: {1,10}", x.Name, x.Value);
+            string expected = $"{x.Name,-10}: {x.Value,10}";
             string actual = StringTemplate.Format("{Name,-10}: {Value,10}", x);
 
             Assert.AreEqual(expected, actual);
         }
 
         // ReSharper disable NotAccessedField.Local
+        [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
         class FieldValues
         {
             public int x;

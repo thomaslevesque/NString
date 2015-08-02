@@ -34,7 +34,7 @@ namespace NString
 
         private StringTemplate(string template)
         {
-            template.CheckArgumentNull("template");
+            template.CheckArgumentNull(nameof(template));
             _template = template;
             ParseTemplate(out _templateWithIndexes, out _placeholders);
         }
@@ -58,7 +58,7 @@ namespace NString
         /// <returns>A StringTemplate using the converted string</returns>
         public static implicit operator StringTemplate([NotNull] string s)
         {
-            s.CheckArgumentNull("s");
+            s.CheckArgumentNull(nameof(s));
             return GetTemplate(s);
         }
 
@@ -82,7 +82,7 @@ namespace NString
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
         public string Format([NotNull] IDictionary<string, object> values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
         {
-            values.CheckArgumentNull("values");
+            values.CheckArgumentNull(nameof(values));
 
             object[] array = new object[_placeholders.Count];
             for (int i = 0; i < _placeholders.Count; i++)
@@ -93,7 +93,7 @@ namespace NString
                 {
                     if (throwOnMissingValue)
                         throw new KeyNotFoundException(string.Format(Resources.TemplateKeyNotFound, key));
-                    value = string.Format("{{{0}}}", key);
+                    value = $"{{{key}}}";
                 }
                 array[i] = value;
             }
@@ -112,7 +112,7 @@ namespace NString
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
         public string Format([NotNull] object values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
         {
-            values.CheckArgumentNull("values");
+            values.CheckArgumentNull(nameof(values));
             return Format(MakeDictionary(values), throwOnMissingValue, formatProvider);
         }
 
@@ -180,7 +180,7 @@ namespace NString
                 }
 
                 int index = tmp.IndexOf(key);
-                return string.Format("{0}{{{1}{2}{3}}}{4}", open, index, alignment, format, close);
+                return $"{open}{{{index}{alignment}{format}}}{close}";
             };
             templateWithIndexes = _regex.Replace(_template, evaluator);
             placeholders = tmp.AsReadOnly();
@@ -224,7 +224,7 @@ namespace NString
 
         private static StringTemplate GetTemplate(string template)
         {
-            template.CheckArgumentNull("template");
+            template.CheckArgumentNull(nameof(template));
             return _templateCache.GetOrAdd(template, () => new StringTemplate(template));
         }
 

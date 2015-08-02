@@ -50,7 +50,7 @@ namespace NString
         /// <returns>A string that consists of the members of values delimited by the separator string. If values has no members, the method returns String.Empty.</returns>
         public static string Join([NotNull] this IEnumerable<string> values, string separator = null)
         {
-            values.CheckArgumentNull("values");
+            values.CheckArgumentNull(nameof(values));
             return string.Join(separator, values);
         }
 
@@ -62,7 +62,7 @@ namespace NString
         /// <returns>An enumerable sequence of lines in this string.</returns>
         public static IEnumerable<string> GetLines([NotNull] this string s)
         {
-            s.CheckArgumentNull("s");
+            s.CheckArgumentNull(nameof(s));
             return GetLinesIterator(s);
         }
 
@@ -88,8 +88,8 @@ namespace NString
         /// <returns>A string containing a specified number of characters from the left side of a string.</returns>
         public static string Left([NotNull] this string s, int count)
         {
-            s.CheckArgumentNull("s");
-            count.CheckArgumentOutOfRange("count", 0, s.Length, Resources.SubstringCountOutOfRange);
+            s.CheckArgumentNull(nameof(s));
+            count.CheckArgumentOutOfRange(nameof(count), 0, s.Length, Resources.SubstringCountOutOfRange);
             return s.Substring(0, count);
         }
 
@@ -103,8 +103,8 @@ namespace NString
         /// <returns>A string containing a specified number of characters from the right side of a string.</returns>
         public static string Right([NotNull] this string s, int count)
         {
-            s.CheckArgumentNull("s");
-            count.CheckArgumentOutOfRange("count", 0, s.Length, Resources.SubstringCountOutOfRange);
+            s.CheckArgumentNull(nameof(s));
+            count.CheckArgumentOutOfRange(nameof(count), 0, s.Length, Resources.SubstringCountOutOfRange);
             return s.Substring(s.Length - count, count);
         }
 
@@ -118,8 +118,8 @@ namespace NString
         /// <returns>A string tuncated to the specified number of characters.</returns>
         public static string Truncate([NotNull] this string s, int count)
         {
-            s.CheckArgumentNull("s");
-            count.CheckArgumentOutOfRange("count", 0, int.MaxValue,
+            s.CheckArgumentNull(nameof(s));
+            count.CheckArgumentOutOfRange(nameof(count), 0, int.MaxValue,
                                           string.Format(Resources.NumberMustBePositiveOrZero, "count"));
             if (count > s.Length)
                 return s;
@@ -135,7 +135,7 @@ namespace NString
         /// <returns>The capitalized string.</returns>
         public static string Capitalize([NotNull] this string s, CultureInfo culture = null)
         {
-            s.CheckArgumentNull("s");
+            s.CheckArgumentNull(nameof(s));
             culture = culture ?? CultureInfo.CurrentCulture;
             if (s.Length == 0)
                 return s;
@@ -162,8 +162,8 @@ namespace NString
         /// This method is not culture-sensitive.</remarks>
         public static bool MatchesWildcard([NotNull] this string s, string pattern, bool caseSensitive = true)
         {
-            s.CheckArgumentNull("s");
-            pattern.CheckArgumentNull("pattern");
+            s.CheckArgumentNull(nameof(s));
+            pattern.CheckArgumentNull(nameof(pattern));
             if (!caseSensitive)
             {
                 s = s.ToUpperInvariant();
@@ -238,8 +238,8 @@ namespace NString
         /// <returns>The truncated string.</returns>
         public static string Ellipsis([NotNull] this string s, int maxLength, string ellipsisString)
         {
-            s.CheckArgumentNull("s");
-            ellipsisString.CheckArgumentNull("ellipsisString");
+            s.CheckArgumentNull(nameof(s));
+            ellipsisString.CheckArgumentNull(nameof(ellipsisString));
             if (maxLength < ellipsisString.Length)
                 throw new ArgumentOutOfRangeException(Resources.MaxLengthCantBeLessThanLengthOfEllipsisString);
 
@@ -259,7 +259,7 @@ namespace NString
         ///<returns>true if the s is a valid email address; otherwise, false.</returns>
         public static bool IsValidEmail([NotNull] this string s)
         {
-            s.CheckArgumentNull("s");
+            s.CheckArgumentNull(nameof(s));
             return _emailRegex.IsMatch(s);
         }
 
@@ -274,9 +274,9 @@ namespace NString
         ///<returns>true si <c>s</c> contains <c>subString</c>, or if <c>subString</c> is an empty string; otherwise, false.</returns>
         public static bool Contains([NotNull] this string s, string subString, StringComparison comparisonType)
         {
-            s.CheckArgumentNull("s");
-            subString.CheckArgumentNull("subString");
-            comparisonType.CheckArgumentInEnum("comparisonType");
+            s.CheckArgumentNull(nameof(s));
+            subString.CheckArgumentNull(nameof(subString));
+            comparisonType.CheckArgumentInEnum(nameof(comparisonType));
             return s.IndexOf(subString, comparisonType) >= 0;
         }
 
@@ -291,8 +291,8 @@ namespace NString
         /// <returns>The string with the replaced character.</returns>
         public static string ReplaceAt([NotNull] this string s, int index, char newChar)
         {
-            s.CheckArgumentNull("s");
-            index.CheckArgumentOutOfRange("index", 0, s.Length - 1);
+            s.CheckArgumentNull(nameof(s));
+            index.CheckArgumentOutOfRange(nameof(index), 0, s.Length - 1);
 
             var chars = s.ToCharArray();
             chars[index] = newChar;

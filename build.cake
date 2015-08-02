@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 ///////////////////////////////////////////////////////////////////////////////
@@ -88,8 +90,8 @@ Task("Push")
     .IsDependentOn("Pack")
     .Does(() =>
 {
-    var doc = System.Xml.Linq.XDocument.Load(nuspecFile);
-    var ns = System.Xml.Linq.XNamespace.Get("http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+    var doc = XDocument.Load(nuspecFile);
+    var ns = XNamespace.Get("http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
     string version = doc.Root.Element(ns + "metadata").Element(ns + "version").Value;
     string package = $"{nugetDir}/{projectName}.{version}.nupkg";
     NuGetPush(package, new NuGetPushSettings());

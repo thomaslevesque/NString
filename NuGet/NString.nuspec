@@ -3,7 +3,7 @@
    <metadata>
       <!-- Required metadata -->
       <id>NString</id>
-      <version>1.1.6</version>
+      <version>1.1.7</version>
       <title>NString</title>
       <authors>Thomas Levesque</authors>
       <description>A collection of utilities for working with strings in .NET.</description>
@@ -13,6 +13,7 @@
       <projectUrl>https://github.com/thomaslevesque/NString/</projectUrl>
       <tags>string</tags>
      <releaseNotes xml:space="preserve">
+- 1.1.7: fixed wrong dependency version in NuGet package
 - 1.1.6: fixed up NuGet package for compatibility with NuGet v3 and project.json (note: requires NuGet 2.8.6 or later)
 - 1.1.5: the ClearCache method now also clears the getter cache
 - 1.1.4: fixed regression
@@ -28,28 +29,28 @@
      </releaseNotes>
       <dependencies>
         <group targetFramework="net">
-          <dependency id="System.Collections.Immutable" version="[1.0.37,]" />
+          <dependency id="System.Collections.Immutable" version="1.1.37" />
         </group>
         <group targetFramework="win">
-          <dependency id="System.Collections.Immutable" version="[1.0.37,]" />
+          <dependency id="System.Collections.Immutable" version="1.1.37" />
         </group>
         <group targetFramework="wp">
-          <dependency id="System.Collections.Immutable" version="[1.0.37,]" />
+          <dependency id="System.Collections.Immutable" version="1.1.37" />
         </group>
         <group targetFramework="wpa">
-          <dependency id="System.Collections.Immutable" version="[1.0.37,]" />
+          <dependency id="System.Collections.Immutable" version="1.1.37" />
         </group>
         <group targetFramework="MonoAndroid">
-          <dependency id="System.Collections.Immutable" version="[1.0.37,]" />
+          <dependency id="System.Collections.Immutable" version="1.1.37" />
         </group>
         <group targetFramework="MonoTouch">
-          <dependency id="System.Collections.Immutable" version="[1.0.37,]" />
+          <dependency id="System.Collections.Immutable" version="1.1.37" />
         </group>
         <group targetFramework="Xamarin.iOS">
-          <dependency id="System.Collections.Immutable" version="[1.0.37,]" />
+          <dependency id="System.Collections.Immutable" version="1.1.37" />
         </group>
         <group targetFramework="portable-net45+win8+wpa81+wp8">
-          <dependency id="System.Collections.Immutable" version="[1.0.37,]" />
+          <dependency id="System.Collections.Immutable" version="1.1.37" />
         </group>
         <group targetFramework="uap">
           <dependency id="System.Runtime" version="4.0.0.0" />
@@ -65,7 +66,7 @@
           <dependency id="System.Text.RegularExpressions" version="4.0.0.0" />
           <dependency id="System.IO" version="4.0.0.0" />
           <dependency id="System.Threading" version="4.0.0.0" />
-          <dependency id="System.Collections.Immutable" version="[1.0.37,]" />
+          <dependency id="System.Collections.Immutable" version="1.1.37" />
         </group>
         <group targetFramework="dotnet">
           <dependency id="System.Runtime" version="4.0.0.0" />
@@ -81,7 +82,7 @@
           <dependency id="System.Text.RegularExpressions" version="4.0.0.0" />
           <dependency id="System.IO" version="4.0.0.0" />
           <dependency id="System.Threading" version="4.0.0.0" />
-          <dependency id="System.Collections.Immutable" version="[1.0.37,]" />
+          <dependency id="System.Collections.Immutable" version="1.1.37" />
         </group>
       </dependencies>
    </metadata>

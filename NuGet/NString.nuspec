@@ -3,7 +3,7 @@
    <metadata>
       <!-- Required metadata -->
       <id>NString</id>
-      <version>1.1.7</version>
+      <version>1.1.8</version>
       <title>NString</title>
       <authors>Thomas Levesque</authors>
       <description>A collection of utilities for working with strings in .NET.</description>
@@ -12,7 +12,10 @@
       <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
       <projectUrl>https://github.com/thomaslevesque/NString/</projectUrl>
       <tags>string</tags>
-     <releaseNotes xml:space="preserve">
+      <releaseNotes xml:space="preserve">
+- 1.1.8: added Reverse method
+         split Capitalize method into two overload
+         added [Pure] ReSharper annotations to extension methods
 - 1.1.7: fixed wrong dependency version in NuGet package
 - 1.1.6: fixed up NuGet package for compatibility with NuGet v3 and project.json (note: requires NuGet 2.8.6 or later)
 - 1.1.5: the ClearCache method now also clears the getter cache
@@ -23,7 +26,7 @@
 - 1.1.2: fixed lack of support for alignment in placeholders for StringTemplate (#2)
          updated to target Windows Phone 8.1 as well
 - 1.1.0: added support for case-insensitive matching in MatchesWildcard (#1)
-- 1.0.2: added Resharper annotations
+- 1.0.2: added ReSharper annotations
 - 1.0.1: switched unit tests to NUnit
 - 1.0.0: first release
      </releaseNotes>

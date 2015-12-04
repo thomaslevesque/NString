@@ -1,18 +1,27 @@
-﻿using System.Resources;
-using System.Reflection;
+﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
+using NString.Properties;
 
 [assembly: AssemblyTitle("NString")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NString")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
 
-[assembly: AssemblyVersion("1.1.7.0")]
-[assembly: AssemblyFileVersion("1.1.7.0")]
+[assembly: AssemblyVersion(VersionInfo.Version)]
+[assembly: AssemblyFileVersion(VersionInfo.Version)]
 
 [assembly: InternalsVisibleTo("NString.Tests")]
+
+namespace NString.Properties
+{
+    static class VersionInfo
+    {
+        public const string Version = "1.1.8.0";
+    }
+}

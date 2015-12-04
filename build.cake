@@ -50,8 +50,15 @@ Task("Clean")
     CleanDirectory(nugetDir);
 });
 
+Task("Restore")
+    .Does(() =>
+{
+    NuGetRestore(solutionFile);
+});
+
 Task("Build")
     .IsDependentOn("Clean")
+    .IsDependentOn("Restore")
     .Does(() =>
 {
     MSBuild(solutionFile,

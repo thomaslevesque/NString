@@ -7,20 +7,20 @@ namespace NString.Tests.StringExtensionsTests
     public class MatchesWildcardTests
     {
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void MatchesWildcard_Throws_If_Input_Is_Null()
         {
             const string s = null;
             // ReSharper disable once AssignNullToNotNullAttribute
-            s.MatchesWildcard("*");
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentNullException>(() => s.MatchesWildcard("*"));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void MatchesWildcard_Throws_If_Pattern_Is_Null()
         {
             const string s = "hello world";
-            s.MatchesWildcard(null);
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentNullException>(() => s.MatchesWildcard(null));
         }
 
         [Test]

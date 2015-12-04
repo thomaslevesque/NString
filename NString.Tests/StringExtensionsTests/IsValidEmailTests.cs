@@ -7,12 +7,12 @@ namespace NString.Tests.StringExtensionsTests
     public class IsValidEmailTests
     {
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void IsValidEmail_Throws_If_Input_Is_Null()
         {
             const string input = null;
             // ReSharper disable once AssignNullToNotNullAttribute
-            input.IsValidEmail();
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentNullException>(() => input.IsValidEmail());
         }
 
         [Test]

@@ -7,21 +7,21 @@ namespace NString.Tests.StringExtensionsTests
     public class ReplaceAtTests
     {
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ReplaceAt_Throws_If_Input_Is_Null()
         {
             const string input = null;
             // ReSharper disable once AssignNullToNotNullAttribute
-            input.ReplaceAt(0, ' ');
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentNullException>(() => input.ReplaceAt(0, ' '));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         [TestCase("foo", -1)]
         [TestCase("foo", 3)]
         public void ReplaceAt_Throws_If_Index_Out_Of_Range(string input, int index)
         {
-            input.ReplaceAt(index, ' ');
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => input.ReplaceAt(index, ' '));
         }
 
 

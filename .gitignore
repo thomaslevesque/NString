@@ -186,5 +186,4 @@ FakesAssemblies/
 
 # Cake
 tools/*
-!tools/packages.config
 

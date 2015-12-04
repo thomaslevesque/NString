@@ -7,61 +7,61 @@ namespace NString.Tests.StringExtensionsTests
     public class EllipsisTests
     {
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Ellipsis_Throws_If_Input_Is_Null()
         {
             const string s = null;
             // ReSharper disable once AssignNullToNotNullAttribute
-            s.Ellipsis(10);
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentNullException>(() => s.Ellipsis(10));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Ellipsis_With_Custom_Ellipsis_String_Throws_If_Input_Is_Null()
         {
             const string s = null;
             // ReSharper disable once AssignNullToNotNullAttribute
-            s.Ellipsis(10, "-----");
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentNullException>(() => s.Ellipsis(10, "-----"));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Ellipsis_Throws_If_Custom_Ellipsis_String_Is_Null()
         {
             const string s = "hello";
-            s.Ellipsis(10, null);
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentNullException>(() => s.Ellipsis(10, null));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Ellipsis_Throws_If_Max_Length_Is_Less_Than_Length_Of_Ellipsis_String()
         {
             const string s = "hello";
-            s.Ellipsis(2);
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => s.Ellipsis(2));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Ellipsis_Throws_If_Max_Length_Less_Than_Length_Of_Custom_Ellipsis_String()
         {
             const string s = "hello";
-            s.Ellipsis(4, "-----");
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => s.Ellipsis(4, "-----"));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Ellipsis_Throws_If_Max_Length_Is_Less_Than_Zero()
         {
             const string s = "hello";
-            s.Ellipsis(-1);
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => s.Ellipsis(-1));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Ellipsis_With_Custom_Ellipsis_String_Throws_If_Max_Length_Is_Less_Than_Zero()
         {
             const string s = "hello";
-            s.Ellipsis(-1, "-----");
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => s.Ellipsis(-1, "-----"));
         }
 
         [Test]

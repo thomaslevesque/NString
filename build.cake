@@ -1,3 +1,5 @@
+#tool "NUnit.Console"
+
 using System.Xml.Linq;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,7 +62,7 @@ Task("Test")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    NUnit(unitTestAssemblies);
+    NUnit3(unitTestAssemblies);
 });
 
 Task("Pack")

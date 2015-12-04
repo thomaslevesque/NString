@@ -7,28 +7,25 @@ namespace NString.Tests.StringExtensionsTests
     public class ContainsTest
     {
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Contains_Throws_If_Input_Is_Null()
         {
             const string input = null;
             // ReSharper disable once AssignNullToNotNullAttribute
-            input.Contains("", StringComparison.CurrentCultureIgnoreCase);
+            ExceptionAssert.Throws<ArgumentNullException>(() => input.Contains("", StringComparison.CurrentCultureIgnoreCase));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Contains_Throws_If_Substring_Is_Null()
         {
             const string input = "";
-            input.Contains(null, StringComparison.CurrentCultureIgnoreCase);
+            ExceptionAssert.Throws<ArgumentNullException>(() => input.Contains(null, StringComparison.CurrentCultureIgnoreCase));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Contains_Throws_If_ComparisonType_Is_Undefined()
         {
             const string input = "";
-            input.Contains("", (StringComparison)42);
+            ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => input.Contains("", (StringComparison)42));
         }
 
         [Test]

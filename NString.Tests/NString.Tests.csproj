@@ -62,6 +62,7 @@
     <Compile Include="StringExtensionsTests\LeftTests.cs" />
     <Compile Include="StringExtensionsTests\MatchesWildcardTests.cs" />
     <Compile Include="StringExtensionsTests\ReplaceAtTests.cs" />
+    <Compile Include="StringExtensionsTests\ReverseTests.cs" />
     <Compile Include="StringExtensionsTests\RightTests.cs" />
     <Compile Include="StringExtensionsTests\TruncateTests.cs" />
     <Compile Include="StringTemplateTests.cs" />

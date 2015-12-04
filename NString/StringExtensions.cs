@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
@@ -308,6 +309,28 @@ namespace NString
             var chars = s.ToCharArray();
             chars[index] = newChar;
             return new string(chars);
+        }
+
+        private static IEnumerable<string> GetTextElements(this string s)
+        {
+            var enumerator = StringInfo.GetTextElementEnumerator(s);
+            while (enumerator.MoveNext())
+                yield return (string) enumerator.Current;
+        }
+
+        /// <summary>
+        /// Reverses the specified string.
+        /// </summary>
+        /// <param name="s">The string to reverse</param>
+        /// <returns>The string with its characters reversed.</returns>
+        /// <exception cref="ArgumentNullException">s is null</exception>
+        /// <remarks>This methods works on full UTF-16 code points, not code units. This means that it will correctly handle surrogate pairs such as emoji or some asian characters.</remarks>
+        [Pure]
+        public static string Reverse([NotNull] this string s)
+        {
+            if (s == null) throw new ArgumentNullException(nameof(s));
+            var textElements = s.GetTextElements();
+            return string.Concat(textElements.Reverse());
         }
     }
 }

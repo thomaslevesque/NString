@@ -127,16 +127,27 @@ namespace NString
         }
 
         /// <summary>
-        /// Capitalizes a string by making its first character uppercase.
+        /// Capitalizes a string by making its first character uppercase, using the current culture.
         /// </summary>
         /// <param name="s">The string to capitalize.</param>
-        /// <param name="culture">The culture to use when making the first character uppercase. If null, the current culture is used.</param>
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <returns>The capitalized string.</returns>
-        public static string Capitalize([NotNull] this string s, CultureInfo culture = null)
+        public static string Capitalize([NotNull] this string s)
+        {
+            return Capitalize(s, CultureInfo.CurrentCulture);
+        }
+
+        /// <summary>
+        /// Capitalizes a string by making its first character uppercase, using the specified culture.
+        /// </summary>
+        /// <param name="s">The string to capitalize.</param>
+        /// <param name="culture">The culture to use when making the first character uppercase.</param>
+        /// <exception cref="ArgumentNullException">s or culture is null.</exception>
+        /// <returns>The capitalized string.</returns>
+        public static string Capitalize([NotNull] this string s, [NotNull] CultureInfo culture)
         {
             s.CheckArgumentNull(nameof(s));
-            culture = culture ?? CultureInfo.CurrentCulture;
+            s.CheckArgumentNull(nameof(culture));
             if (s.Length == 0)
                 return s;
             var chars = s.ToCharArray();

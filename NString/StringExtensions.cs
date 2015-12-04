@@ -24,6 +24,7 @@ namespace NString
         /// <remarks>This is just a shortcut for <see cref="String.IsNullOrEmpty"/>, allowing it to be used as an extension method.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [ContractAnnotation("s:null=>true")]
+        [Pure]
         public static bool IsNullOrEmpty(this string s)
         {
             return string.IsNullOrEmpty(s);
@@ -37,6 +38,7 @@ namespace NString
         /// <remarks>This is just a shortcut for <see cref="String.IsNullOrWhiteSpace"/>, allowing it to be used as an extension method.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [ContractAnnotation("s:null=>true")]
+        [Pure]
         public static bool IsNullOrWhiteSpace(this string s)
         {
             return string.IsNullOrWhiteSpace(s);
@@ -49,6 +51,7 @@ namespace NString
         /// <param name="separator">The string to use as a separator. separator is included in the returned string only if values has more than one element.</param>
         /// <exception cref="ArgumentNullException">values is null.</exception>
         /// <returns>A string that consists of the members of values delimited by the separator string. If values has no members, the method returns String.Empty.</returns>
+        [Pure]
         public static string Join([NotNull] this IEnumerable<string> values, string separator = null)
         {
             values.CheckArgumentNull(nameof(values));
@@ -61,6 +64,7 @@ namespace NString
         /// <param name="s">The string whose lines are to be enumerated.</param>
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <returns>An enumerable sequence of lines in this string.</returns>
+        [Pure]
         public static IEnumerable<string> GetLines([NotNull] this string s)
         {
             s.CheckArgumentNull(nameof(s));
@@ -87,6 +91,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">count is less than 0 or greater than the length of the string.</exception>
         /// <returns>A string containing a specified number of characters from the left side of a string.</returns>
+        [Pure]
         public static string Left([NotNull] this string s, int count)
         {
             s.CheckArgumentNull(nameof(s));
@@ -102,6 +107,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">count is less than 0 or greater than the length of the string.</exception>
         /// <returns>A string containing a specified number of characters from the right side of a string.</returns>
+        [Pure]
         public static string Right([NotNull] this string s, int count)
         {
             s.CheckArgumentNull(nameof(s));
@@ -117,6 +123,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">count is less than 0.</exception>
         /// <returns>A string tuncated to the specified number of characters.</returns>
+        [Pure]
         public static string Truncate([NotNull] this string s, int count)
         {
             s.CheckArgumentNull(nameof(s));
@@ -145,6 +152,7 @@ namespace NString
         /// <param name="culture">The culture to use when making the first character uppercase.</param>
         /// <exception cref="ArgumentNullException">s or culture is null.</exception>
         /// <returns>The capitalized string.</returns>
+        [Pure]
         public static string Capitalize([NotNull] this string s, [NotNull] CultureInfo culture)
         {
             s.CheckArgumentNull(nameof(s));
@@ -172,6 +180,7 @@ namespace NString
         /// <returns>true if the string matches the pattern; otherwise, false.</returns>
         /// <remarks>The pattern can contain wildcards such as '*' (any number of characters) or '?' (exactly one character).
         /// This method is not culture-sensitive.</remarks>
+        [Pure]
         public static bool MatchesWildcard([NotNull] this string s, string pattern, bool caseSensitive = true)
         {
             s.CheckArgumentNull(nameof(s));
@@ -231,6 +240,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">maxLength is less than 3.</exception>
         /// <returns>The truncated string.</returns>
+        [Pure]
         public static string Ellipsis([NotNull] this string s, int maxLength)
         {
             const string ellipsisString = "...";
@@ -248,6 +258,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">maxLength is less than the length of ellipsisString.</exception>
         /// <returns>The truncated string.</returns>
+        [Pure]
         public static string Ellipsis([NotNull] this string s, int maxLength, string ellipsisString)
         {
             s.CheckArgumentNull(nameof(s));
@@ -269,6 +280,7 @@ namespace NString
         ///<param name="s">The string to check.</param>
         ///<exception cref="ArgumentNullException">s is null.</exception>
         ///<returns>true if the s is a valid email address; otherwise, false.</returns>
+        [Pure]
         public static bool IsValidEmail([NotNull] this string s)
         {
             s.CheckArgumentNull(nameof(s));
@@ -301,6 +313,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">index doesn't refer to a valid position within the string.</exception>
         /// <returns>The string with the replaced character.</returns>
+        [Pure]
         public static string ReplaceAt([NotNull] this string s, int index, char newChar)
         {
             s.CheckArgumentNull(nameof(s));

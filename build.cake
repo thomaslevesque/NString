@@ -63,20 +63,13 @@ Task("JustBuild")
             settings => settings.SetConfiguration(configuration));    
     });
 
-Task("Build")
-    .IsDependentOn("Clean")
-    .IsDependentOn("Restore")
-    .IsDependentOn("JustBuild");
-
-Task("Test")
-    .IsDependentOn("JustBuild")
+Task("JustTest")
     .Does(() =>
     {
         NUnit3(unitTestAssemblies);
     });
-
-Task("Pack")
-    .IsDependentOn("Build")
+    
+Task("JustPack")
     .Does(() =>
     {
         CreateDirectory(nupkgDir);
@@ -97,8 +90,7 @@ Task("Pack")
         NuGetPack(nuspecFile, packSettings);
     });
 
-Task("Push")
-    .IsDependentOn("Pack")
+Task("JustPush")
     .Does(() =>
     {
         var doc = XDocument.Load(nuspecFile);
@@ -107,6 +99,41 @@ Task("Push")
         string package = $"{nugetDir}/{projectName}.{version}.nupkg";
         NuGetPush(package, new NuGetPushSettings());
     });
+
+Task("UploadTestResults")
+    .Does(() =>
+    {
+        using (var wc = new System.Net.WebClient())
+        {
+            var jobId = EnvironmentVariable("APPVEYOR_JOB_ID");
+            var url = $"https://ci.appveyor.com/api/testresults/nunit3/{jobId}";
+            var path = MakeAbsolute(File("TestResult.xml")).ToString();
+            wc.UploadFile(url, path);
+        }
+    });
+
+// Higher level tasks
+
+Task("Build")
+    .IsDependentOn("Clean")
+    .IsDependentOn("Restore")
+    .IsDependentOn("JustBuild");
+
+Task("Test")
+    .IsDependentOn("Build")
+    .IsDependentOn("JustTest");
+
+Task("Pack")
+    .IsDependentOn("Build")
+    .IsDependentOn("JustPack");
+
+Task("Push")
+    .IsDependentOn("Pack")
+    .IsDependentOn("JustPush");
+    
+Task("Test-AppVeyor")
+    .IsDependentOn("Test")
+    .IsDependentOn("UploadTestResults");
 
 ///////////////////////////////////////////////////////////////////////////////
 // TARGETS

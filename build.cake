@@ -45,66 +45,68 @@ Teardown(() =>
 
 Task("Clean")
     .Does(() =>
-{
-    CleanDirectory(outDir);
-    CleanDirectory(nugetDir);
-});
+    {
+        CleanDirectory(outDir);
+        CleanDirectory(nugetDir);
+    });
 
 Task("Restore")
     .Does(() =>
-{
-    NuGetRestore(solutionFile);
-});
+    {
+        NuGetRestore(solutionFile);
+    });
+
+Task("JustBuild")
+    .Does(() =>
+    {
+        MSBuild(solutionFile,
+            settings => settings.SetConfiguration(configuration));    
+    });
 
 Task("Build")
     .IsDependentOn("Clean")
     .IsDependentOn("Restore")
-    .Does(() =>
-{
-    MSBuild(solutionFile,
-        settings => settings.SetConfiguration(configuration));
-});
+    .IsDependentOn("JustBuild");
 
 Task("Test")
-    .IsDependentOn("Build")
+    .IsDependentOn("JustBuild")
     .Does(() =>
-{
-    NUnit3(unitTestAssemblies);
-});
+    {
+        NUnit3(unitTestAssemblies);
+    });
 
 Task("Pack")
-    .IsDependentOn("Test")
+    .IsDependentOn("Build")
     .Does(() =>
-{
-    
-    CreateDirectory(nupkgDir);
-    foreach (var target in nugetTargets)
     {
-        string targetDir = $"{nupkgDir}/lib/{target}";
-        CreateDirectory(targetDir);
-        foreach (var file in nugetFiles)
+        CreateDirectory(nupkgDir);
+        foreach (var target in nugetTargets)
         {
-            CopyFileToDirectory($"{outDir}/{file}", targetDir);
+            string targetDir = $"{nupkgDir}/lib/{target}";
+            CreateDirectory(targetDir);
+            foreach (var file in nugetFiles)
+            {
+                CopyFileToDirectory($"{outDir}/{file}", targetDir);
+            }
         }
-    }
-    var packSettings = new NuGetPackSettings
-    {
-        BasePath = nupkgDir,
-        OutputDirectory = nugetDir
-    };
-    NuGetPack(nuspecFile, packSettings);
-});
+        var packSettings = new NuGetPackSettings
+        {
+            BasePath = nupkgDir,
+            OutputDirectory = nugetDir
+        };
+        NuGetPack(nuspecFile, packSettings);
+    });
 
 Task("Push")
     .IsDependentOn("Pack")
     .Does(() =>
-{
-    var doc = XDocument.Load(nuspecFile);
-    var ns = XNamespace.Get("http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-    string version = doc.Root.Element(ns + "metadata").Element(ns + "version").Value;
-    string package = $"{nugetDir}/{projectName}.{version}.nupkg";
-    NuGetPush(package, new NuGetPushSettings());
-});
+    {
+        var doc = XDocument.Load(nuspecFile);
+        var ns = XNamespace.Get("http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+        string version = doc.Root.Element(ns + "metadata").Element(ns + "version").Value;
+        string package = $"{nugetDir}/{projectName}.{version}.nupkg";
+        NuGetPush(package, new NuGetPushSettings());
+    });
 
 ///////////////////////////////////////////////////////////////////////////////
 // TARGETS

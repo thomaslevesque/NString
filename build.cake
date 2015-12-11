@@ -131,9 +131,10 @@ Task("Push")
     .IsDependentOn("Pack")
     .IsDependentOn("JustPush");
     
-Task("Test-AppVeyor")
+Task("AppVeyor")
     .IsDependentOn("Test")
-    .IsDependentOn("UploadTestResults");
+    .IsDependentOn("JustPack");
+    
 
 ///////////////////////////////////////////////////////////////////////////////
 // TARGETS

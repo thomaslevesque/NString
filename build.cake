@@ -1,4 +1,4 @@
-#tool "NUnit.Console"
+#tool nuget:?package=NUnit.ConsoleRunner&version=3.4.1
 
 using System.Xml.Linq;
 
@@ -98,18 +98,6 @@ Task("JustPush")
         string version = doc.Root.Element(ns + "metadata").Element(ns + "version").Value;
         string package = $"{nugetDir}/{projectName}.{version}.nupkg";
         NuGetPush(package, new NuGetPushSettings());
-    });
-
-Task("UploadTestResults")
-    .Does(() =>
-    {
-        using (var wc = new System.Net.WebClient())
-        {
-            var jobId = EnvironmentVariable("APPVEYOR_JOB_ID");
-            var url = $"https://ci.appveyor.com/api/testresults/nunit3/{jobId}";
-            var path = MakeAbsolute(File("TestResult.xml")).ToString();
-            wc.UploadFile(url, path);
-        }
     });
 
 // Higher level tasks

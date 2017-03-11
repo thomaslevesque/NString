@@ -1,4 +1,4 @@
-#tool nuget:?package=NUnit.ConsoleRunner&version=3.4.1
+#tool nuget:?package=NUnit.ConsoleRunner&version=3.6.1
 
 using System.Xml.Linq;
 
@@ -12,32 +12,11 @@ var configuration = Argument<string>("configuration", "Release");
 // Variable definitions
 
 var projectName = "NString";
-var solutionFile = $"./{projectName}.sln";
-var outDir = $"./{projectName}/bin/{configuration}";
+var libraryProject = $"{projectName}/{projectName}.csproj";
+var testProject = $"{projectName}.Tests/{projectName}.Tests.csproj";
+var outDir = $"{projectName}/bin/{configuration}";
 
 var unitTestAssemblies = new[] { $"{projectName}.Tests/bin/{configuration}/{projectName}.Tests.dll" };
-
-var nuspecFile = $"./NuGet/{projectName}.nuspec";
-var nugetDir = $"./NuGet/{configuration}";
-var nupkgDir = $"{nugetDir}/nupkg";
-var nugetTargets = new[] { $"dotnet", $"portable-net45+win8+wpa81+wp8" };
-var nugetFiles = new[] { $"{projectName}.dll", $"{projectName}.xml" };
-
-///////////////////////////////////////////////////////////////////////////////
-// SETUP / TEARDOWN
-///////////////////////////////////////////////////////////////////////////////
-
-Setup(() =>
-{
-    // Executed BEFORE the first task.
-    Information("Running tasks...");
-});
-
-Teardown(() =>
-{
-    // Executed AFTER the last task.
-    Information("Finished running tasks.");
-});
 
 ///////////////////////////////////////////////////////////////////////////////
 // TASK DEFINITIONS
@@ -47,20 +26,27 @@ Task("Clean")
     .Does(() =>
     {
         CleanDirectory(outDir);
-        CleanDirectory(nugetDir);
     });
 
 Task("Restore")
     .Does(() =>
     {
-        NuGetRestore(solutionFile);
+        DotNetCoreRestore(projectName);
+        NuGetRestore(testProject, new NuGetRestoreSettings
+        {
+            PackagesDirectory = "packages"
+        });
     });
 
 Task("JustBuild")
     .Does(() =>
     {
-        MSBuild(solutionFile,
-            settings => settings.SetConfiguration(configuration));    
+        DotNetCoreBuild(projectName, new DotNetCoreBuildSettings
+        {
+            Configuration = configuration
+        });
+
+        MSBuild(testProject, settings => settings.SetConfiguration(configuration).WithTarget("Build"));
     });
 
 Task("JustTest")
@@ -72,31 +58,18 @@ Task("JustTest")
 Task("JustPack")
     .Does(() =>
     {
-        CreateDirectory(nupkgDir);
-        foreach (var target in nugetTargets)
+        DotNetCorePack(projectName, new DotNetCorePackSettings
         {
-            string targetDir = $"{nupkgDir}/lib/{target}";
-            CreateDirectory(targetDir);
-            foreach (var file in nugetFiles)
-            {
-                CopyFileToDirectory($"{outDir}/{file}", targetDir);
-            }
-        }
-        var packSettings = new NuGetPackSettings
-        {
-            BasePath = nupkgDir,
-            OutputDirectory = nugetDir
-        };
-        NuGetPack(nuspecFile, packSettings);
+            Configuration = configuration
+        });
     });
 
 Task("JustPush")
     .Does(() =>
     {
-        var doc = XDocument.Load(nuspecFile);
-        var ns = XNamespace.Get("http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-        string version = doc.Root.Element(ns + "metadata").Element(ns + "version").Value;
-        string package = $"{nugetDir}/{projectName}.{version}.nupkg";
+        var doc = XDocument.Load(libraryProject);
+        string version = doc.Root.Elements("PropertyGroup").Elements("Version").First().Value;
+        string package = $"{projectName}/bin/{configuration}/{projectName}.{version}.nupkg";
         NuGetPush(package, new NuGetPushSettings());
     });
 
@@ -118,18 +91,14 @@ Task("Pack")
 Task("Push")
     .IsDependentOn("Pack")
     .IsDependentOn("JustPush");
-    
-Task("AppVeyor")
-    .IsDependentOn("Test")
-    .IsDependentOn("JustPack");
-    
 
 ///////////////////////////////////////////////////////////////////////////////
 // TARGETS
 ///////////////////////////////////////////////////////////////////////////////
 
 Task("Default")
-    .IsDependentOn("Test");
+    .IsDependentOn("Test")
+    .IsDependentOn("Pack");
 
 ///////////////////////////////////////////////////////////////////////////////
 // EXECUTION

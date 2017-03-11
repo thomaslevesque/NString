@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using JetBrains.Annotations;
 using NUnit.Framework;
 // ReSharper disable InconsistentNaming
 using System;
@@ -191,12 +190,13 @@ namespace NString.Tests
         }
 
         // ReSharper disable NotAccessedField.Local
-        [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
+        #pragma warning disable 414
         class FieldValues
         {
             public int x;
             public string text;
         }
+        #pragma warning restore 414
         // ReSharper restore NotAccessedField.Local
 
 

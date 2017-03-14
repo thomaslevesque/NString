@@ -1,5 +1,3 @@
-#tool nuget:?package=NUnit.ConsoleRunner&version=3.6.1
-
 using System.Xml.Linq;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,8 +14,6 @@ var libraryProject = $"{projectName}/{projectName}.csproj";
 var testProject = $"{projectName}.Tests/{projectName}.Tests.csproj";
 var outDir = $"{projectName}/bin/{configuration}";
 
-var unitTestAssemblies = new[] { $"{projectName}.Tests/bin/{configuration}/{projectName}.Tests.dll" };
-
 ///////////////////////////////////////////////////////////////////////////////
 // TASK DEFINITIONS
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,37 +24,21 @@ Task("Clean")
         CleanDirectory(outDir);
     });
 
-Task("Restore")
-    .Does(() =>
-    {
-        DotNetCoreRestore(projectName);
-        NuGetRestore(testProject, new NuGetRestoreSettings
-        {
-            PackagesDirectory = "packages"
-        });
-    });
+Task("Restore").Does(() => DotNetCoreRestore());
 
 Task("JustBuild")
     .Does(() =>
     {
-        DotNetCoreBuild(projectName, new DotNetCoreBuildSettings
-        {
-            Configuration = configuration
-        });
-
-        MSBuild(testProject, settings => settings.SetConfiguration(configuration).WithTarget("Build"));
+        DotNetCoreBuild(".", new DotNetCoreBuildSettings { Configuration = configuration });
     });
 
 Task("JustTest")
-    .Does(() =>
-    {
-        NUnit3(unitTestAssemblies);
-    });
+    .Does(() => DotNetCoreTest(testProject));
     
 Task("JustPack")
     .Does(() =>
     {
-        DotNetCorePack(projectName, new DotNetCorePackSettings
+        DotNetCorePack(libraryProject, new DotNetCorePackSettings
         {
             Configuration = configuration
         });

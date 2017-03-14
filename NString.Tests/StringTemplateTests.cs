@@ -164,7 +164,7 @@ namespace NString.Tests
         {
             var date = DateTime.Today;
 
-            var cultures = new[] { CultureInfo.InvariantCulture, null, CultureInfo.GetCultureInfo("fr-FR") };
+            var cultures = new[] { CultureInfo.InvariantCulture, null, new CultureInfo("fr-FR") };
 
             foreach (var culture in cultures)
             {

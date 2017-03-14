@@ -1,41 +1,40 @@
 ﻿using System;
-using NUnit.Framework;
+using Xunit;
 
 namespace NString.Tests.StringExtensionsTests
 {
-    [TestFixture]
-    public class ContainsTest
+        public class ContainsTest
     {
-        [Test]
+        [Fact]
         public void Contains_Throws_If_Input_Is_Null()
         {
             const string input = null;
             // ReSharper disable once AssignNullToNotNullAttribute
-            ExceptionAssert.Throws<ArgumentNullException>(() => input.Contains("", StringComparison.CurrentCultureIgnoreCase));
+            Assert.Throws<ArgumentNullException>(() => input.Contains("", StringComparison.CurrentCultureIgnoreCase));
         }
 
-        [Test]
+        [Fact]
         public void Contains_Throws_If_Substring_Is_Null()
         {
             const string input = "";
-            ExceptionAssert.Throws<ArgumentNullException>(() => input.Contains(null, StringComparison.CurrentCultureIgnoreCase));
+            Assert.Throws<ArgumentNullException>(() => input.Contains(null, StringComparison.CurrentCultureIgnoreCase));
         }
 
-        [Test]
+        [Fact]
         public void Contains_Throws_If_ComparisonType_Is_Undefined()
         {
             const string input = "";
-            ExceptionAssert.Throws<ArgumentOutOfRangeException>(() => input.Contains("", (StringComparison)42));
+            Assert.Throws<ArgumentOutOfRangeException>(() => input.Contains("", (StringComparison)42));
         }
 
-        [Test]
-        [TestCase("Hello World", "WORLD", StringComparison.CurrentCultureIgnoreCase, true)]
-        [TestCase("Hello World", "world", StringComparison.CurrentCultureIgnoreCase, true)]
-        [TestCase("Hello World", "WORLD", StringComparison.CurrentCulture, false)]
-        [TestCase("Hello World", "World", StringComparison.CurrentCulture, true)]
+        [Theory]
+        [InlineData("Hello World", "WORLD", StringComparison.CurrentCultureIgnoreCase, true)]
+        [InlineData("Hello World", "world", StringComparison.CurrentCultureIgnoreCase, true)]
+        [InlineData("Hello World", "WORLD", StringComparison.CurrentCulture, false)]
+        [InlineData("Hello World", "World", StringComparison.CurrentCulture, true)]
         public void Contains_Returns_True_If_Input_Contains_Substring(string input, string subString, StringComparison comparisonType, bool expected)
         {
-            Assert.AreEqual(expected, input.Contains(subString, comparisonType));
+            Assert.Equal(expected, input.Contains(subString, comparisonType));
         }
     }
 }

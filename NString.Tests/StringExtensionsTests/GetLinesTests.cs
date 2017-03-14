@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 
 namespace NString.Tests.StringExtensionsTests
 {
-    [TestFixture]
-    public class GetLinesTests
+        public class GetLinesTests
     {
-        [Test]
+        [Fact]
         public void GetLines_Throws_If_String_Is_Null()
         {
             const string s = null;
             // ReSharper disable once AssignNullToNotNullAttribute
-            ExceptionAssert.Throws<ArgumentNullException>(() => s.GetLines());
+            Assert.Throws<ArgumentNullException>(() => s.GetLines());
         }
 
-        [Test]
+        [Fact]
         public void GetLines_Returns_All_Lines_In_String()
         {
             const string input = @"Yesterday
@@ -33,7 +32,7 @@ Oh I believe in yesterday";
 
             var actual = input.GetLines().ToArray();
 
-            CollectionAssert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
     }
 }

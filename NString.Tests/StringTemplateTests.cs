@@ -1,15 +1,14 @@
 ﻿using System.Globalization;
-using NUnit.Framework;
+using Xunit;
 // ReSharper disable InconsistentNaming
 using System;
 using System.Collections.Generic;
 
 namespace NString.Tests
 {
-    [TestFixture]
     public class StringTemplateTests
     {
-        [Test]
+        [Fact]
         public void Check_Format()
         {
             string name = "FooBar";
@@ -34,27 +33,27 @@ namespace NString.Tests
             string result1 = StringTemplate.Format(templateFormat, values1);
             string result2 = StringTemplate.Format(templateFormat, values2);
 
-            Assert.AreEqual(expected, result1);
-            Assert.AreEqual(expected, result2);
+            Assert.Equal(expected, result1);
+            Assert.Equal(expected, result2);
         }
 
-        [Test]
+        [Fact]
         public void Should_Raise_Exception_When_Called_With_Null_Template()
         {
-            ExceptionAssert.Throws<ArgumentNullException>(
+            Assert.Throws<ArgumentNullException>(
                 // ReSharper disable once AssignNullToNotNullAttribute
                 () => StringTemplate.Format(null, ""));
         }
 
-        [Test]
+        [Fact]
         public void Should_Raise_Exception_When_Called_With_Null_Values()
         {
-            ExceptionAssert.Throws<ArgumentNullException>(
+            Assert.Throws<ArgumentNullException>(
                 // ReSharper disable once AssignNullToNotNullAttribute
                 () => StringTemplate.Format("Bonjour {0}.", null));
         }
 
-        [Test]
+        [Fact]
         public void Format_Should_Throw_When_No_Matching_Value_Exists()
         {
             string format = "Bonjour {Name}";
@@ -64,58 +63,58 @@ namespace NString.Tests
                 { "Nam", "numero 6"},
             };
 
-            ExceptionAssert.Throws<KeyNotFoundException>(() => StringTemplate.Format(format, values1));
-            Assert.AreEqual(StringTemplate.Format(format, values1, false), format);
+            Assert.Throws<KeyNotFoundException>(() => StringTemplate.Format(format, values1));
+            Assert.Equal(StringTemplate.Format(format, values1, false), format);
 
             var values2 = new
             {
                 Nam = "numero 6"
             };
 
-            ExceptionAssert.Throws<KeyNotFoundException>(() => StringTemplate.Format(format, values2));
-            Assert.AreEqual(StringTemplate.Format(format, values2, false), format);
+            Assert.Throws<KeyNotFoundException>(() => StringTemplate.Format(format, values2));
+            Assert.Equal(StringTemplate.Format(format, values2, false), format);
         }
 
-        [Test]
+        [Fact]
         public void ToString_Should_Return_Template()
         {
             StringTemplate testStringTemplate = StringTemplate.Parse("test");
-            Assert.AreEqual("test", testStringTemplate.ToString());
+            Assert.Equal("test", testStringTemplate.ToString());
         }
 
-        [Test]
+        [Fact]
         public void Implicit_Operator()
         {
             StringTemplate testStringTemplate = "test";
-            Assert.AreEqual("test", testStringTemplate.ToString());
+            Assert.Equal("test", testStringTemplate.ToString());
         }
 
-        [Test]
+        [Fact]
         public void Test_BracesAreEscaped()
         {
             var values1 = new object[] { "World" };
             var values2 = new { Name = "World" };
 
             string s = StringTemplate.Format("Hello {{Name}} !", values2);
-            Assert.AreEqual("Hello {Name} !", s);
+            Assert.Equal("Hello {Name} !", s);
 
             var s1 = String.Format("Hello {{{0}}} !", values1);
             var s2 = StringTemplate.Format("Hello {{{Name}}} !", values2);
-            Assert.AreEqual(s1, s2);
+            Assert.Equal(s1, s2);
 
             s1 = String.Format("Hello {{{0} !", values1);
             s2 = StringTemplate.Format("Hello {{{Name} !", values2);
-            Assert.AreEqual(s1, s2);
+            Assert.Equal(s1, s2);
 
             s1 = String.Format("Hello {0}}} !", values1);
             s2 = StringTemplate.Format("Hello {Name}}} !", values2);
-            Assert.AreEqual(s1, s2);
+            Assert.Equal(s1, s2);
 
-            ExceptionAssert.Throws<FormatException>(
+            Assert.Throws<FormatException>(
                 () => s2 = StringTemplate.Format("Hello {{{Name}} !", values2));
         }
 
-        [Test]
+        [Fact]
         public void Test_WithFields()
         {
             int x = 42;
@@ -124,10 +123,10 @@ namespace NString.Tests
             string expected = $"{text} {x}";
             string actual = StringTemplate.Format("{text} {x}", new FieldValues { x = x, text = text });
 
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [Test]
+        [Fact]
         public void Test_HiddenMembers()
         {
             DerivedValues values = new DerivedValues { X = "hello", Y = 42 };
@@ -137,44 +136,44 @@ namespace NString.Tests
             string expected = $"{values.X} {values.Y}";
             string actual = StringTemplate.Format("{X} {Y}", values);
 
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [Test]
+        [Fact]
         public void Test_CachedTemplate()
         {
             var t1 = StringTemplate.Parse("{X}");
             var t2 = StringTemplate.Parse("{X}");
 
-            Assert.AreSame(t1, t2);
+            Assert.Same(t1, t2);
         }
 
-        [Test]
+        [Fact]
         public void Test_ClearCached()
         {
             var t1 = StringTemplate.Parse("{X}");
             StringTemplate.ClearCache();
             var t2 = StringTemplate.Parse("{X}");
 
-            Assert.AreNotSame(t1, t2);
+            Assert.NotSame(t1, t2);
         }
 
-        [Test]
+        [Fact]
         public void Test_WithFormatProvider()
         {
             var date = DateTime.Today;
 
-            var cultures = new[] { CultureInfo.InvariantCulture, null, CultureInfo.GetCultureInfo("fr-FR") };
+            var cultures = new[] { CultureInfo.InvariantCulture, null, new CultureInfo("fr-FR") };
 
             foreach (var culture in cultures)
             {
                 string expected = date.ToString("D", culture);
                 string actual = StringTemplate.Format("{date:D}", new { date }, true, culture);
-                Assert.AreEqual(expected, actual);
+                Assert.Equal(expected, actual);
             }
         }
 
-        [Test]
+        [Fact]
         public void Format_Should_Accept_Alignment_In_PlaceHolder()
         {
             var x = new
@@ -186,7 +185,7 @@ namespace NString.Tests
             string expected = $"{x.Name,-10}: {x.Value,10}";
             string actual = StringTemplate.Format("{Name,-10}: {Value,10}", x);
 
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
         // ReSharper disable NotAccessedField.Local

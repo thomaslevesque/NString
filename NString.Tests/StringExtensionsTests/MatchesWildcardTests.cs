@@ -1,77 +1,76 @@
 ﻿using System;
-using NUnit.Framework;
+using Xunit;
 
 namespace NString.Tests.StringExtensionsTests
 {
-    [TestFixture]
-    public class MatchesWildcardTests
+        public class MatchesWildcardTests
     {
-        [Test]
+        [Fact]
         public void MatchesWildcard_Throws_If_Input_Is_Null()
         {
             const string s = null;
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            ExceptionAssert.Throws<ArgumentNullException>(() => s.MatchesWildcard("*"));
+            Assert.Throws<ArgumentNullException>(() => s.MatchesWildcard("*"));
         }
 
-        [Test]
+        [Fact]
         public void MatchesWildcard_Throws_If_Pattern_Is_Null()
         {
             const string s = "hello world";
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            ExceptionAssert.Throws<ArgumentNullException>(() => s.MatchesWildcard(null));
+            Assert.Throws<ArgumentNullException>(() => s.MatchesWildcard(null));
         }
 
-        [Test]
-        [TestCase("hello world", "*", true)]
-        [TestCase("hello world", "hello*", true)]
-        [TestCase("hello world", "*world", true)]
-        [TestCase("hello world", "hel*rld", true)]
-        [TestCase("hello world", "*hello*", true)]
-        [TestCase("hello world", "*hello world", true)]
-        [TestCase("hello world", "hello world*", true)]
-        [TestCase("hello world", "hello", false)]
-        [TestCase("hello world", "*hello", false)]
-        [TestCase("hello world", "world*", false)]
+        [Theory]
+        [InlineData("hello world", "*", true)]
+        [InlineData("hello world", "hello*", true)]
+        [InlineData("hello world", "*world", true)]
+        [InlineData("hello world", "hel*rld", true)]
+        [InlineData("hello world", "*hello*", true)]
+        [InlineData("hello world", "*hello world", true)]
+        [InlineData("hello world", "hello world*", true)]
+        [InlineData("hello world", "hello", false)]
+        [InlineData("hello world", "*hello", false)]
+        [InlineData("hello world", "world*", false)]
         public void MatchesWildcard_Returns_True_If_Input_Matches_Pattern_With_Stars(string input, string pattern, bool expected)
         {
-            Assert.AreEqual(expected, input.MatchesWildcard(pattern));
+            Assert.Equal(expected, input.MatchesWildcard(pattern));
         }
 
-        [Test]
-        [TestCase("hello world", "???????????", true)]
-        [TestCase("hello world", "hello ?????", true)]
-        [TestCase("hello world", "????? world", true)]
-        [TestCase("hello world", "hel?????rld", true)]
-        [TestCase("hello world", "???lo wo???", true)]
-        [TestCase("hello world", "?", false)]
-        [TestCase("hello world", "?hello world", false)]
-        [TestCase("hello world", "hello world?", false)]
-        [TestCase("hello world", "?hello world?", false)]
+        [Theory]
+        [InlineData("hello world", "???????????", true)]
+        [InlineData("hello world", "hello ?????", true)]
+        [InlineData("hello world", "????? world", true)]
+        [InlineData("hello world", "hel?????rld", true)]
+        [InlineData("hello world", "???lo wo???", true)]
+        [InlineData("hello world", "?", false)]
+        [InlineData("hello world", "?hello world", false)]
+        [InlineData("hello world", "hello world?", false)]
+        [InlineData("hello world", "?hello world?", false)]
         public void MatchesWildcard_Returns_True_If_Input_Matches_Pattern_With_QuestionMarks(string input, string pattern, bool expected)
         {
-            Assert.AreEqual(expected, input.MatchesWildcard(pattern));
+            Assert.Equal(expected, input.MatchesWildcard(pattern));
         }
 
-        [Test]
-        [TestCase("hello world", "HELLO WORLD", true)]
-        [TestCase("hello world", "HELLO *", true)]
-        [TestCase("hello world", "* WORLD", true)]
-        [TestCase("hello world", "HELLO ?????", true)]
+        [Theory]
+        [InlineData("hello world", "HELLO WORLD", true)]
+        [InlineData("hello world", "HELLO *", true)]
+        [InlineData("hello world", "* WORLD", true)]
+        [InlineData("hello world", "HELLO ?????", true)]
         public void MatchesWildcard_Ignores_Case(string input, string pattern, bool expected)
         {
-            Assert.AreEqual(expected, input.MatchesWildcard(pattern, false));
+            Assert.Equal(expected, input.MatchesWildcard(pattern, false));
         }
 
-        [Test]
-        [TestCase("hello world", "HELLO WORLD", false)]
-        [TestCase("hello world", "HELLO *", false)]
-        [TestCase("hello world", "* WORLD", false)]
-        [TestCase("hello world", "HELLO ?????", false)]
+        [Theory]
+        [InlineData("hello world", "HELLO WORLD", false)]
+        [InlineData("hello world", "HELLO *", false)]
+        [InlineData("hello world", "* WORLD", false)]
+        [InlineData("hello world", "HELLO ?????", false)]
         public void MatchesWildcard_Matches_Case(string input, string pattern, bool expected)
         {
-            Assert.AreEqual(expected, input.MatchesWildcard(pattern));
+            Assert.Equal(expected, input.MatchesWildcard(pattern));
         }
     }
 }

@@ -92,7 +92,7 @@ namespace NString
                 if (!values.TryGetValue(key, out value))
                 {
                     if (throwOnMissingValue)
-                        throw new KeyNotFoundException(string.Format(Resources.TemplateKeyNotFound, key));
+                        throw new KeyNotFoundException(Resources.TemplateKeyNotFound(key));
                     value = $"{{{key}}}";
                 }
                 array[i] = value;

@@ -1,12 +1,7 @@
-﻿using System.Resources;
-using System.Reflection;
-
-namespace NString.Properties
+﻿namespace NString.Properties
 {
     internal static class Resources
     {
-        public static ResourceManager ResourceManager { get; } = new ResourceManager("NString.Properties.Resources", typeof(Resources).GetTypeInfo().Assembly);
-
         public static string TemplateKeyNotFound(string key) =>
             $"No value found for key '{key}'.";
 

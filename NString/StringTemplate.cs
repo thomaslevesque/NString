@@ -152,15 +152,16 @@ namespace NString
         /// </summary>
         public static void ClearCache()
         {
-            _templateCache.Clear();
-            _gettersCache.Clear();
+            TemplateCache.Clear();
+            GettersCache.Clear();
         }
 
-        private static readonly Regex _regex = new Regex(@"(?<open>{+)(?<key>\w+)\s*(?<alignment>,\s*-?\d+)?\s*(?<format>:[^}]+)?(?<close>}+)");
+        private static readonly Regex TemplateRegex = new Regex(@"(?<open>{+)(?<key>\w+)\s*(?<alignment>,\s*-?\d+)?\s*(?<format>:[^}]+)?(?<close>}+)");
         private void ParseTemplate(out string templateWithIndexes, out IList<string> placeholders)
         {
             var tmp = new List<string>();
-            MatchEvaluator evaluator = m =>
+
+            string Evaluator(Match m)
             {
                 string open = m.Groups["open"].Value;
                 string close = m.Groups["close"].Value;
@@ -181,8 +182,9 @@ namespace NString
 
                 int index = tmp.IndexOf(key);
                 return $"{open}{{{index}{alignment}{format}}}{close}";
-            };
-            templateWithIndexes = _regex.Replace(_template, evaluator);
+            }
+
+            templateWithIndexes = TemplateRegex.Replace(_template, Evaluator);
             placeholders = tmp.AsReadOnly();
         }
 
@@ -220,20 +222,20 @@ namespace NString
 
         #region Cache
 
-        private static readonly Cache<string, StringTemplate> _templateCache = new Cache<string, StringTemplate>();
+        private static readonly Cache<string, StringTemplate> TemplateCache = new Cache<string, StringTemplate>();
 
         private static StringTemplate GetTemplate(string template)
         {
             template.CheckArgumentNull(nameof(template));
-            return _templateCache.GetOrAdd(template, () => new StringTemplate(template));
+            return TemplateCache.GetOrAdd(template, () => new StringTemplate(template));
         }
 
-        private static readonly Cache<Type, Cache<string, Func<object, object>>> _gettersCache =
+        private static readonly Cache<Type, Cache<string, Func<object, object>>> GettersCache =
             new Cache<Type, Cache<string, Func<object, object>>>();
 
         private static Func<object, object> GetGetterFromCache(Type type, string memberName)
         {
-            var typeGetters = _gettersCache.GetOrAdd(type, () => new Cache<string, Func<object, object>>());
+            var typeGetters = GettersCache.GetOrAdd(type, () => new Cache<string, Func<object, object>>());
             var getter = typeGetters.GetOrAdd(memberName, () => CreateGetter(type, memberName));
             return getter;
         }

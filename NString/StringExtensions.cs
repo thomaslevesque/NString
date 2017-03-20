@@ -127,8 +127,9 @@ namespace NString
         public static string Truncate([NotNull] this string s, int count)
         {
             s.CheckArgumentNull(nameof(s));
-            count.CheckArgumentOutOfRange(nameof(count), 0, int.MaxValue,
-                                          string.Format(Resources.NumberMustBePositiveOrZero, "count"));
+            count.CheckArgumentOutOfRange(
+                nameof(count), 0, int.MaxValue,
+                Resources.NumberMustBePositiveOrZero(nameof(count)));
             if (count > s.Length)
                 return s;
             return s.Substring(0, count);
@@ -245,7 +246,7 @@ namespace NString
         {
             const string ellipsisString = "...";
             if (maxLength < ellipsisString.Length)
-                throw new ArgumentOutOfRangeException(string.Format(Resources.MaxLengthCantBeLessThan, ellipsisString.Length));
+                throw new ArgumentOutOfRangeException(Resources.MaxLengthCantBeLessThan(ellipsisString.Length));
             return s.Ellipsis(maxLength, ellipsisString);
         }
 

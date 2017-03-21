@@ -33,15 +33,15 @@ Task("JustBuild")
     });
 
 Task("JustTest")
-    .Does(() => DotNetCoreTest(testProject));
+    .Does(() =>
+    {
+        DotNetCoreTest(testProject, new DotNetCoreTestSettings { Configuration = configuration });
+    });
     
 Task("JustPack")
     .Does(() =>
     {
-        DotNetCorePack(libraryProject, new DotNetCorePackSettings
-        {
-            Configuration = configuration
-        });
+        DotNetCorePack(libraryProject, new DotNetCorePackSettings { Configuration = configuration });
     });
 
 Task("JustPush")

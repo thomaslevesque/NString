@@ -9,3 +9,7 @@ build_script:
 test: off
 artifacts:
 - path: '**/NString.*.nupkg'
+environment:
+  matrix:
+    - test_framework: net461
+    - test_framework: netcoreapp1.0

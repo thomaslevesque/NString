@@ -35,7 +35,11 @@ Task("JustBuild")
 Task("JustTest")
     .Does(() =>
     {
-        DotNetCoreTest(testProject, new DotNetCoreTestSettings { Configuration = configuration });
+        DotNetCoreTest(testProject, new DotNetCoreTestSettings
+        {
+            Configuration = configuration,
+            Framework = EnvironmentVariable("test_framework")
+        });
     });
     
 Task("JustPack")

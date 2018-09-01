@@ -10,6 +10,8 @@
     <PackageProjectUrl>https://github.com/thomaslevesque/NString/</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/thomaslevesque/NString/blob/master/RELEASENOTES.md</PackageReleaseNotes>
     <PackageTags>string</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <PropertyGroup Label="Build settings">
@@ -18,6 +20,7 @@
   
   <ItemGroup>
     <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All"/>
   </ItemGroup>
 
   <ItemGroup>

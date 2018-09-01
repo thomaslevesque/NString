@@ -1,5 +1,10 @@
 # Release notes
 
+## 1.3.0
+
+- added support for .NET Standard 2.0
+- added support for [SourceLink](https://github.com/dotnet/sourcelink)
+
 ## 1.2.0
 
 - added support for .NET Standard 1.0

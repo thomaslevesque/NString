@@ -12,10 +12,12 @@
     <PackageTags>string</PackageTags>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <AssemblyOriginatorKeyFile>NString.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 
   <PropertyGroup Label="Build settings">
-    <DocumentationFile>$(OutputPath)\NString.xml</DocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\NString.xml</DocumentationFile>
   </PropertyGroup>
   
   <ItemGroup>

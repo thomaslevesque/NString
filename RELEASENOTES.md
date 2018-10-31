@@ -1,5 +1,10 @@
 # Release notes
 
+## 2.0.0
+
+- added strong-naming to the assembly
+- removed the `IsValidEmail` method, which was unreliable and didn't really belong in this library anyway.
+
 ## 1.3.0
 
 - added support for .NET Standard 2.0
@@ -12,7 +17,7 @@
 ## 1.1.8
 
 - added `Reverse` method
-- split `Capitalize` method into two overload
+- split `Capitalize` method into two overloads
 - added `[Pure]` ReSharper annotations to extension methods
 
 ## 1.1.7

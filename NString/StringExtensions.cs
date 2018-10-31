@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using NString.Internal;
 using NString.Properties;
@@ -271,21 +270,6 @@ namespace NString
                 return s;
 
             return s.Substring(0, maxLength - ellipsisString.Length) + ellipsisString;
-        }
-
-        private static readonly Regex _emailRegex = new Regex(@"^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$", RegexOptions.IgnoreCase);
-
-        ///<summary>
-        /// Checks if the specified string is a valid email address.
-        ///</summary>
-        ///<param name="s">The string to check.</param>
-        ///<exception cref="ArgumentNullException">s is null.</exception>
-        ///<returns>true if the s is a valid email address; otherwise, false.</returns>
-        [Pure]
-        public static bool IsValidEmail([NotNull] this string s)
-        {
-            s.CheckArgumentNull(nameof(s));
-            return _emailRegex.IsMatch(s);
         }
 
         ///<summary>

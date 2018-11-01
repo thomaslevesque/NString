@@ -91,15 +91,6 @@ The specified length includes the length of the ellipsis.
 "hello world".Ellipsis(20) // "hello world"
 ```
 
-### IsValidEmail
-
-Checks if the specified string is a valid email address.
-
-```csharp
-"hello world".IsValidEmail() // false
-"hello@world.com".IsValidEmail() // true
-```
-
 ### Contains
 
 Checks if the specified string contains the specified substring, using the specified comparison type (`Ordinal`, `CurrentCultureIgnoreCase`, etc).  Unlike the `String.StartsWith` and `String.EndsWith` methods, the `String.Contains` method doesn't have an overload to specify the comparison type; this extension method fills that gap.

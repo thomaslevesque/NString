@@ -1,14 +1,10 @@
 # NString
 
-[![NuGet version](https://img.shields.io/nuget/v/NString.svg)](https://www.nuget.org/packages/NString)
-[![AppVeyor build](https://img.shields.io/appveyor/ci/thomaslevesque/nstring.svg)](https://ci.appveyor.com/project/thomaslevesque/nstring)
-[![AppVeyor tests](https://img.shields.io/appveyor/tests/thomaslevesque/nstring.svg)](https://ci.appveyor.com/project/thomaslevesque/nstring/build/tests)
+[![NuGet version](https://img.shields.io/nuget/v/NString.svg?logo=nuget)](https://www.nuget.org/packages/NString)
+[![AppVeyor build](https://img.shields.io/appveyor/ci/thomaslevesque/nstring.svg?logo=appveyor)](https://ci.appveyor.com/project/thomaslevesque/nstring)
+[![AppVeyor tests](https://img.shields.io/appveyor/tests/thomaslevesque/nstring.svg?logo=appveyor)](https://ci.appveyor.com/project/thomaslevesque/nstring/build/tests)
 
 A collection of utilities for working with strings in .NET.
-
-This library is a Portable Class Library targeting .NET 4.5, Windows Phone 8 and Windows Store apps (8.0).
-
-Available as a [NuGet package](https://www.nuget.org/packages/NString/)
 
 ## StringTemplate
 

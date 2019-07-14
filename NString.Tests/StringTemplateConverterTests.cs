@@ -112,6 +112,8 @@ namespace NString.Tests
         [Fact]
         public void StringTemplateValueConverter_Caches_And_Reuse_Converters()
         {
+            StringTemplate.ClearCache(); // Make sure we don't use instances from other tests...
+
             var values = new MiscConvertersValues { State_Mutator_Converter = 0 };
             var otherValues = new SecondMiscConvertersValues { State_Mutator_Converter2 = 0 };
 
@@ -128,6 +130,31 @@ namespace NString.Tests
         }
 
         [Fact]
+        public void StringTemplateValueConverter_Caches_And_Reuse_Converters_And_Behaves_Properly_When_Caches_Are_Cleared()
+        {
+            StringTemplate.ClearCache(); // Make sure we don't use instances from other tests...
+
+            var values = new MiscConvertersValues { State_Mutator_Converter = 0 };
+            var otherValues = new SecondMiscConvertersValues { State_Mutator_Converter2 = 0 };
+
+            string actual1 = StringTemplate.Format("{State_Mutator_Converter}", values);
+            string actual2 = StringTemplate.Format("{State_Mutator_Converter}", values);
+
+            // Clear the cached getters and converters.
+            // This test will fail if the getters cache is cleared, but not the converters cache.
+            StringTemplate.ClearCache();
+
+            string actual3 = StringTemplate.Format("{State_Mutator_Converter}", values);
+            string actual4 = StringTemplate.Format("{State_Mutator_Converter2}", otherValues);
+
+            // The converter instance should be reused, so its state is preserved and incremented between calls
+            Assert.Equal("1", actual1);
+            Assert.Equal("2", actual2);
+            Assert.Equal("1", actual3);
+            Assert.Equal("2", actual4); // tests caching across types and members
+        }
+
+                [Fact]
         public void Should_Throw_When_Attribute_Has_Null_Converter_Type()
         {
             var values = new MiscConvertersValues { Attribute_With_Null_Converter_Type = 0 };

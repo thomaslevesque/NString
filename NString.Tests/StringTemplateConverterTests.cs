@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq;
 using Xunit;
-// ReSharper disable InconsistentNaming
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -16,9 +15,9 @@ namespace NString.Tests
         [Fact]
         public void StringTemplateValueConverter_Can_Convert_Property()
         {
-            var values = new PropertyOrFieldValues { ConcatenatedStringCollectionProperty = StringCollectionValues };
+            var values = new BasicTestValues { StringCollectionProperty = StringCollectionValues };
 
-            string actual = StringTemplate.Format("{ConcatenatedStringCollectionProperty}", values);
+            string actual = StringTemplate.Format("{StringCollectionProperty}", values);
 
             Assert.Equal(ExpectedStringCollectionConcatenation, actual);
         }
@@ -26,19 +25,9 @@ namespace NString.Tests
         [Fact]
         public void StringTemplateValueConverter_Can_Convert_Field()
         {
-            var values = new PropertyOrFieldValues { ConcatenatedStringCollectionField = StringCollectionValues };
+            var values = new BasicTestValues { StringCollectionField = StringCollectionValues };
 
-            string actual = StringTemplate.Format("{ConcatenatedStringCollectionField}", values);
-
-            Assert.Equal(ExpectedStringCollectionConcatenation, actual);
-        }
-
-        [Fact]
-        public void StringTemplateValueConverter_Can_Convert_Reference_Type()
-        {
-            var values = new ReferenceOrValueTypeValues { ConcatenatedStringCollection = StringCollectionValues };
-
-            string actual = StringTemplate.Format("{ConcatenatedStringCollection}", values);
+            string actual = StringTemplate.Format("{StringCollectionField}", values);
 
             Assert.Equal(ExpectedStringCollectionConcatenation, actual);
         }
@@ -46,9 +35,9 @@ namespace NString.Tests
         [Fact]
         public void StringTemplateValueConverter_Can_Convert_Value_Type()
         {
-            var values = new ReferenceOrValueTypeValues { DateTimeToTicks = new DateTime(ticks: 42) };
+            var values = new BasicTestValues { ValueTypeProperty = new DateTime(ticks: 42) };
 
-            string actual = StringTemplate.Format("{DateTimeToTicks}", values);
+            string actual = StringTemplate.Format("{ValueTypeProperty}", values);
 
             Assert.Equal("42", actual);
         }
@@ -56,15 +45,15 @@ namespace NString.Tests
         [Fact]
         public void StringTemplateValueConverter_Works_With_FormatProvider()
         {
-            var values = new ValuesForFormatProvider { ConvertedWithFortyTwoDaysAdded = DateTime.Today };
-            var expectedConvertedDate = values.ConvertedWithFortyTwoDaysAdded + TimeSpan.FromDays(42);
+            var values = new ValuesForFormatProvider { DateTimeConvertedWithFortyTwoDaysAdded = DateTime.Today };
+            var expectedConvertedDate = values.DateTimeConvertedWithFortyTwoDaysAdded + TimeSpan.FromDays(42);
 
             var cultures = new[] { CultureInfo.InvariantCulture, null, new CultureInfo("fr-FR") };
 
             foreach (var culture in cultures)
             {
                 string expected = expectedConvertedDate.ToString("D", culture);
-                string actual = StringTemplate.Format("{ConvertedWithFortyTwoDaysAdded:D}", values, true, culture);
+                string actual = StringTemplate.Format("{DateTimeConvertedWithFortyTwoDaysAdded:D}", values, true, culture);
                 Assert.Equal(expected, actual);
             }
         }
@@ -72,12 +61,13 @@ namespace NString.Tests
         [Fact]
         public void StringTemplateValueConverter_Works_With_FormatProvider_And_Return_Type_Change()
         {
-            var ticks = 0xDEADBEEF;
-            var values = new ValuesForFormatProvider { ConvertedToTicks = new DateTime(ticks) };
-            var expectedHexTicks = $"{ticks:X}";
+            var ticks = 1337;
+            var values = new ValuesForFormatProvider { DateTimeConvertedToTicks = new DateTime(ticks) };
+            var formatProvider = new NumberFormatInfo { CurrencySymbol = "piasses", CurrencyPositivePattern = 3 /* symbol at the end, with a space */ };
+            var expectedFormattedTicks = string.Format(formatProvider, "{0:C0}", ticks);
 
-            var actual = StringTemplate.Format("{ConvertedToTicks:X}", values, true);
-            Assert.Equal(expectedHexTicks, actual);
+            var actual = StringTemplate.Format("{DateTimeConvertedToTicks:C0}", values, true, formatProvider);
+            Assert.Equal(expectedFormattedTicks, actual);
         }
 
         [Fact]
@@ -85,12 +75,12 @@ namespace NString.Tests
         {
             var values = new ValuesForFormatProvider
             {
-                ConvertedToTicks = new DateTime(42),
-                ConvertedToDayName = DateTime.Today
+                DateTimeConvertedToTicks = new DateTime(42),
+                DateTimeConvertedToDayName = DateTime.Today
             };
 
-            string expected = $"{values.ConvertedToDayName.DayOfWeek,-30}: {values.ConvertedToTicks.Ticks,30}";
-            string actual = StringTemplate.Format("{ConvertedToDayName,-30}: {ConvertedToTicks,30}", values);
+            string expected = $"{values.DateTimeConvertedToDayName.DayOfWeek,-30}: {values.DateTimeConvertedToTicks.Ticks,30}";
+            string actual = StringTemplate.Format("{DateTimeConvertedToDayName,-30}: {DateTimeConvertedToTicks,30}", values);
 
             Assert.Equal(expected, actual);
         }
@@ -110,17 +100,17 @@ namespace NString.Tests
         }
 
         [Fact]
-        public void StringTemplateValueConverter_Caches_And_Reuse_Converters()
+        public void StringTemplateValueConverter_Caches_And_Reuses_Converters()
         {
             StringTemplate.ClearCache(); // Make sure we don't use instances from other tests...
 
-            var values = new MiscConvertersValues { State_Mutator_Converter = 0 };
-            var otherValues = new SecondMiscConvertersValues { State_Mutator_Converter2 = 0 };
+            var values = new ValuesWithMiscConverters { AttributedWithStateMutatorConverter = 0 };
+            var otherValues = new OtherValuesWithMiscConverters { AttributedWithStateMutatorConverter2 = 0 };
 
-            string actual1 = StringTemplate.Format("{State_Mutator_Converter}", values);
-            string actual2 = StringTemplate.Format("{State_Mutator_Converter}", values);
-            string actual3 = StringTemplate.Format("{State_Mutator_Converter}", values);
-            string actual4 = StringTemplate.Format("{State_Mutator_Converter2}", otherValues);
+            string actual1 = StringTemplate.Format("{AttributedWithStateMutatorConverter}", values);
+            string actual2 = StringTemplate.Format("{AttributedWithStateMutatorConverter}", values);
+            string actual3 = StringTemplate.Format("{AttributedWithStateMutatorConverter}", values);
+            string actual4 = StringTemplate.Format("{AttributedWithStateMutatorConverter2}", otherValues);
 
             // The converter instance should be reused, so its state is preserved and incremented between calls
             Assert.Equal("1", actual1);
@@ -130,22 +120,22 @@ namespace NString.Tests
         }
 
         [Fact]
-        public void StringTemplateValueConverter_Caches_And_Reuse_Converters_And_Behaves_Properly_When_Caches_Are_Cleared()
+        public void StringTemplateValueConverter_Caches_And_Reuses_Converters_And_Behaves_Properly_When_Caches_Are_Cleared()
         {
             StringTemplate.ClearCache(); // Make sure we don't use instances from other tests...
 
-            var values = new MiscConvertersValues { State_Mutator_Converter = 0 };
-            var otherValues = new SecondMiscConvertersValues { State_Mutator_Converter2 = 0 };
+            var values = new ValuesWithMiscConverters { AttributedWithStateMutatorConverter = 0 };
+            var otherValues = new OtherValuesWithMiscConverters { AttributedWithStateMutatorConverter2 = 0 };
 
-            string actual1 = StringTemplate.Format("{State_Mutator_Converter}", values);
-            string actual2 = StringTemplate.Format("{State_Mutator_Converter}", values);
+            string actual1 = StringTemplate.Format("{AttributedWithStateMutatorConverter}", values);
+            string actual2 = StringTemplate.Format("{AttributedWithStateMutatorConverter}", values);
 
             // Clear the cached getters and converters.
             // This test will fail if the getters cache is cleared, but not the converters cache.
             StringTemplate.ClearCache();
 
-            string actual3 = StringTemplate.Format("{State_Mutator_Converter}", values);
-            string actual4 = StringTemplate.Format("{State_Mutator_Converter2}", otherValues);
+            string actual3 = StringTemplate.Format("{AttributedWithStateMutatorConverter}", values);
+            string actual4 = StringTemplate.Format("{AttributedWithStateMutatorConverter2}", otherValues);
 
             // The converter instance should be reused, so its state is preserved and incremented between calls
             Assert.Equal("1", actual1);
@@ -154,20 +144,20 @@ namespace NString.Tests
             Assert.Equal("2", actual4); // tests caching across types and members
         }
 
-                [Fact]
+        [Fact]
         public void Should_Throw_When_Attribute_Has_Null_Converter_Type()
         {
-            var values = new MiscConvertersValues { Attribute_With_Null_Converter_Type = 0 };
+            var values = new ValuesWithMiscConverters { AttributedWithNullConverterType = 0 };
 
-            Assert.Throws<InvalidOperationException>(() => StringTemplate.Format("{Attribute_With_Null_Converter_Type}", values));
+            Assert.Throws<InvalidOperationException>(() => StringTemplate.Format("{AttributedWithNullConverterType}", values));
         }
 
         [Fact]
         public void Should_Throw_When_Converter_CanConvert_Is_False()
         {
-            var values = new MiscConvertersValues { Converter_CanConvert_Always_False = 0 };
+            var values = new ValuesWithMiscConverters { AttributedWithConverterHavingCanConvertAlwaysFalse = 0 };
 
-            Assert.Throws<NotSupportedException>(() => StringTemplate.Format("{Converter_CanConvert_Always_False}", values));
+            Assert.Throws<NotSupportedException>(() => StringTemplate.Format("{AttributedWithConverterHavingCanConvertAlwaysFalse}", values));
         }
 
         [Theory]
@@ -176,9 +166,9 @@ namespace NString.Tests
         [InlineData("hello", false)]
         public void Generic_Converter_Allows_Null_Values(object input, bool expectedResult)
         {
-            var values = new MiscConvertersValues { NullToBool = input };
+            var values = new ValuesWithMiscConverters { AttributedWithNullToBoolConverter = input };
 
-            string actual = StringTemplate.Format("{NullToBool}", values);
+            string actual = StringTemplate.Format("{AttributedWithNullToBoolConverter}", values);
 
             Assert.Equal(expectedResult, bool.Parse(actual));
         }
@@ -186,9 +176,9 @@ namespace NString.Tests
         [Fact]
         public void Generic_Converter_CanConvert_Allows_Derived_Type()
         {
-            var values = new MiscConvertersValues { String_Array_With_ReadOnlyCollection_Converter = StringCollectionValues };
+            var values = new ValuesWithMiscConverters { StringArrayWithReadOnlyCollectionConverter = StringCollectionValues };
 
-            string actual = StringTemplate.Format("{String_Array_With_ReadOnlyCollection_Converter}", values);
+            string actual = StringTemplate.Format("{StringArrayWithReadOnlyCollectionConverter}", values);
 
             Assert.Equal(ExpectedStringCollectionConcatenation, actual);
         }
@@ -245,58 +235,52 @@ namespace NString.Tests
             public object Convert(object value) => throw new NotSupportedException();
         }
 
-        class PropertyOrFieldValues
+        class BasicTestValues
         {
             [StringTemplateValueConverter(typeof(StringCollectionConverter))]
-            public IReadOnlyCollection<string> ConcatenatedStringCollectionProperty { get; set; }
+            public IReadOnlyCollection<string> StringCollectionProperty { get; set; }
 
             [StringTemplateValueConverter(typeof(StringCollectionConverter))]
-            public IReadOnlyCollection<string> ConcatenatedStringCollectionField;
-        }
-
-        class ReferenceOrValueTypeValues
-        {
-            [StringTemplateValueConverter(typeof(StringCollectionConverter))]
-            public IReadOnlyCollection<string> ConcatenatedStringCollection { get; set; }
+            public IReadOnlyCollection<string> StringCollectionField;
 
             [StringTemplateValueConverter(typeof(DateTimeToTicksConverter))]
-            public DateTime DateTimeToTicks { get; set; }
+            public DateTime ValueTypeProperty { get; set; }
         }
 
         class ValuesForFormatProvider
         {
             [StringTemplateValueConverter(typeof(AddFortyTwoDaysConverter))]
-            public DateTime ConvertedWithFortyTwoDaysAdded { get; set; }
+            public DateTime DateTimeConvertedWithFortyTwoDaysAdded { get; set; }
 
             [StringTemplateValueConverter(typeof(DateTimeToTicksConverter))]
-            public DateTime ConvertedToTicks { get; set; }
+            public DateTime DateTimeConvertedToTicks { get; set; }
 
             [StringTemplateValueConverter(typeof(GetDayNameConverter))]
-            public DateTime ConvertedToDayName { get; set; }
+            public DateTime DateTimeConvertedToDayName { get; set; }
         }
 
-        class MiscConvertersValues
+        class ValuesWithMiscConverters
         {
             [StringTemplateValueConverter(null)]
-            public int Attribute_With_Null_Converter_Type { get; set; }
+            public int AttributedWithNullConverterType { get; set; }
 
             [StringTemplateValueConverter(typeof(CanNeverConvertConverter))]
-            public int Converter_CanConvert_Always_False { get; set; }
+            public int AttributedWithConverterHavingCanConvertAlwaysFalse { get; set; }
 
             [StringTemplateValueConverter(typeof(IncrementStateConverter))]
-            public int State_Mutator_Converter { get; set; }
+            public int AttributedWithStateMutatorConverter { get; set; }
 
             [StringTemplateValueConverter(typeof(StringCollectionConverter))]
-            public string[] String_Array_With_ReadOnlyCollection_Converter { get; set; }
+            public string[] StringArrayWithReadOnlyCollectionConverter { get; set; }
 
             [StringTemplateValueConverter(typeof(NullToBoolConverter))]
-            public object NullToBool { get; set; }
+            public object AttributedWithNullToBoolConverter { get; set; }
         }
 
-        class SecondMiscConvertersValues
+        class OtherValuesWithMiscConverters
         {
             [StringTemplateValueConverter(typeof(IncrementStateConverter))]
-            public int State_Mutator_Converter2 { get; set; }
+            public int AttributedWithStateMutatorConverter2 { get; set; }
         }
 
         class EnumValues
@@ -318,17 +302,7 @@ namespace NString.Tests
 
             class EnumValuesConverter : StringTemplateValueConverter<DayOfWeek>
             {
-                public override object Convert(DayOfWeek value)
-                {
-                    switch (value)
-                    {
-                        case DayOfWeek.Sunday:
-                        case DayOfWeek.Saturday:
-                            return "Week-end! :)";
-                        default:
-                            return $"{value} + :(";
-                    }
-                }
+                public override object Convert(DayOfWeek value) => EnumValues.GetCustomDayString(value);
             }
         }
     }

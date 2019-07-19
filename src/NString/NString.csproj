@@ -6,7 +6,7 @@
     <Authors>Thomas Levesque</Authors>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/thomaslevesque/NString/</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/thomaslevesque/NString/blob/master/RELEASENOTES.md</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/thomaslevesque/NString/releases</PackageReleaseNotes>
     <PackageTags>string</PackageTags>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <AssemblyOriginatorKeyFile>NString.snk</AssemblyOriginatorKeyFile>

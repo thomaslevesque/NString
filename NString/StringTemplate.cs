@@ -153,6 +153,7 @@ namespace NString
         public static void ClearCache()
         {
             TemplateCache.Clear();
+            ValueConverterCache.Clear();
             GettersCache.Clear();
         }
 
@@ -223,6 +224,12 @@ namespace NString
         #region Cache
 
         private static readonly Cache<string, StringTemplate> TemplateCache = new Cache<string, StringTemplate>();
+        private static readonly Cache<Type, IStringTemplateValueConverter> ValueConverterCache = new Cache<Type, IStringTemplateValueConverter>();
+        private static readonly Cache<Type, Cache<string, Func<object, object>>> GettersCache =
+            new Cache<Type, Cache<string, Func<object, object>>>();
+
+        private static readonly Lazy<MethodInfo> ConvertStringTemplateValueMethodInfo = new Lazy<MethodInfo>(
+            () => typeof(IStringTemplateValueConverter).GetRuntimeMethod(nameof(IStringTemplateValueConverter.Convert), new[] { typeof(object) }));
 
         private static StringTemplate GetTemplate(string template)
         {
@@ -230,8 +237,13 @@ namespace NString
             return TemplateCache.GetOrAdd(template, () => new StringTemplate(template));
         }
 
-        private static readonly Cache<Type, Cache<string, Func<object, object>>> GettersCache =
-            new Cache<Type, Cache<string, Func<object, object>>>();
+        private static IStringTemplateValueConverter GetValueConverterFromCache(Type valueConverterType)
+        {
+            valueConverterType.CheckArgumentNull(nameof(valueConverterType));
+            return ValueConverterCache.GetOrAdd(
+                valueConverterType,
+                () => (IStringTemplateValueConverter)Activator.CreateInstance(valueConverterType));
+        }
 
         private static Func<object, object> GetGetterFromCache(Type type, string memberName)
         {
@@ -262,14 +274,38 @@ namespace NString
             }
             if (member == null)
                 return null;
+
             var param = Expression.Parameter(typeof(object), "x");
             var memberAccess = Expression.MakeMemberAccess(Expression.Convert(param, type), member);
-            Expression body = memberAccess;
-            if (memberAccess.Type.GetTypeInfo().IsValueType)
-                body = Expression.Convert(memberAccess, typeof(object));
+            Expression body;
+
+            var converterAttribute = member.GetCustomAttribute<StringTemplateValueConverterAttribute>();
+            if (converterAttribute == null)
+                body = memberAccess;
+            else if (converterAttribute.ConverterType != null)
+                body = MakeStringTemplateValueConversionExpression(memberAccess, converterAttribute.ConverterType);
+            else
+                throw new InvalidOperationException($"An instance of {nameof(StringTemplateValueConverterAttribute)}" +
+                    $" must have its {nameof(StringTemplateValueConverterAttribute.ConverterType)} property set.");
+
+            if (body.Type.GetTypeInfo().IsValueType)
+                body = Expression.Convert(body, typeof(object));
 
             var expr = Expression.Lambda<Func<object, object>>(body, param);
             return expr.Compile();
+        }
+
+        private static MethodCallExpression MakeStringTemplateValueConversionExpression(MemberExpression memberAccess, Type valueConverterType)
+        {
+            var converterInstance = GetValueConverterFromCache(valueConverterType);
+            if (!converterInstance.CanConvert(memberAccess.Type))
+                throw new NotSupportedException($"Member \"{memberAccess.Member}\" cannot be converted by an instance of \"{valueConverterType}\".");
+
+            Expression converterArgument = memberAccess;
+            if (memberAccess.Type.GetTypeInfo().IsValueType)
+                converterArgument = Expression.Convert(memberAccess, typeof(object));
+
+            return Expression.Call(Expression.Constant(converterInstance), ConvertStringTemplateValueMethodInfo.Value, converterArgument);
         }
 
         #endregion

@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NString\NString.csproj" />
+    <ProjectReference Include="..\..\src\NString\NString.csproj" />
   </ItemGroup>
 
   <ItemGroup>

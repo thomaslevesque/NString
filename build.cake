@@ -10,8 +10,8 @@ var configuration = Argument<string>("configuration", "Release");
 // Variable definitions
 
 var projectName = "NString";
-var libraryProject = $"{projectName}/{projectName}.csproj";
-var testProject = $"{projectName}.Tests/{projectName}.Tests.csproj";
+var libraryProject = $"src/{projectName}/{projectName}.csproj";
+var testProject = $"tests/{projectName}.Tests/{projectName}.Tests.csproj";
 var outDir = $"{projectName}/bin/{configuration}";
 
 ///////////////////////////////////////////////////////////////////////////////

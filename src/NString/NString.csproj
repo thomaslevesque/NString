@@ -1,32 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup Label="Project Information">
+  <PropertyGroup>
     <TargetFrameworks>netstandard1.0;netstandard2.0;net45</TargetFrameworks>
-    <Version>2.0.0</Version>
     <Description>A collection of utilities for working with strings in .NET.</Description>
     <Authors>Thomas Levesque</Authors>
-    <PackageLicenseUrl>https://github.com/thomaslevesque/NString/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/thomaslevesque/NString/</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/thomaslevesque/NString/blob/master/RELEASENOTES.md</PackageReleaseNotes>
     <PackageTags>string</PackageTags>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <AssemblyOriginatorKeyFile>NString.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-
-  <PropertyGroup Label="Build settings">
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\NString.xml</DocumentationFile>
-  </PropertyGroup>
-  
+ 
   <ItemGroup>
     <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="NString.csproj.DotSettings" />
+    <PackageReference Include="MinVer" Version="1.1.0" />
   </ItemGroup>
 
 </Project>

@@ -1,14 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NString", "src\NString\NString.csproj", "{F68C9EA5-B24A-4655-B396-448056E58B32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NString", "src\NString\NString.csproj", "{F68C9EA5-B24A-4655-B396-448056E58B32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NString.Tests", "tests\NString.Tests\NString.Tests.csproj", "{6C31C1B8-EA85-4161-A112-D4053A0BB215}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NString.Tests", "tests\NString.Tests\NString.Tests.csproj", "{6C31C1B8-EA85-4161-A112-D4053A0BB215}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C76374BD-0551-42D0-891C-B8A349FADEB2}"
 	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		appveyor.yml = appveyor.yml
+		build.cmd = build.cmd
+		build.ps1 = build.ps1
+		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -29,5 +35,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7C14F19E-3C6E-46BA-BD5C-1B5E05E4AE3D}
 	EndGlobalSection
 EndGlobal

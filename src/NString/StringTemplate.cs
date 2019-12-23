@@ -80,16 +80,15 @@ namespace NString
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public string Format([NotNull] IDictionary<string, object> values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
+        public string Format([NotNull] IDictionary<string, object?> values, bool throwOnMissingValue = true, IFormatProvider? formatProvider = null)
         {
             values.CheckArgumentNull(nameof(values));
 
-            object[] array = new object[_placeholders.Count];
+            object?[] array = new object[_placeholders.Count];
             for (int i = 0; i < _placeholders.Count; i++)
             {
                 string key = _placeholders[i];
-                object value;
-                if (!values.TryGetValue(key, out value))
+                if (!values.TryGetValue(key, out object? value))
                 {
                     if (throwOnMissingValue)
                         throw new KeyNotFoundException(Resources.TemplateKeyNotFound(key));
@@ -110,7 +109,7 @@ namespace NString
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public string Format([NotNull] object values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
+        public string Format([NotNull] object values, bool throwOnMissingValue = true, IFormatProvider? formatProvider = null)
         {
             values.CheckArgumentNull(nameof(values));
             return Format(MakeDictionary(values), throwOnMissingValue, formatProvider);
@@ -126,7 +125,7 @@ namespace NString
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public static string Format([NotNull] string template, [NotNull] IDictionary<string, object> values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
+        public static string Format([NotNull] string template, [NotNull] IDictionary<string, object?> values, bool throwOnMissingValue = true, IFormatProvider? formatProvider = null)
         {
             return GetTemplate(template).Format(values, throwOnMissingValue, formatProvider);
         }
@@ -142,7 +141,7 @@ namespace NString
         /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
         /// <returns>The formatted string</returns>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">throwOnMissingValue is true and no value was found in the dictionary for a placeholder</exception>
-        public static string Format([NotNull] string template, [NotNull] object values, bool throwOnMissingValue = true, IFormatProvider formatProvider = null)
+        public static string Format([NotNull] string template, [NotNull] object values, bool throwOnMissingValue = true, IFormatProvider? formatProvider = null)
         {
             return GetTemplate(template).Format(values, throwOnMissingValue, formatProvider);
         }
@@ -196,23 +195,22 @@ namespace NString
             return string.Empty;
         }
 
-        private IDictionary<string, object> MakeDictionary(object obj)
+        private IDictionary<string, object?> MakeDictionary(object obj)
         {
-            Dictionary<string, object> dict = new Dictionary<string, object>();
+            Dictionary<string, object?> dict = new Dictionary<string, object?>();
             foreach (string name in _placeholders)
             {
-                object value;
-                if (TryGetMemberValue(obj, name, out value))
+                if (TryGetMemberValue(obj, name, out object? value))
                     dict.Add(name, value);
             }
             return dict;
         }
 
-        private static bool TryGetMemberValue(object obj, string memberName, out object value)
+        private static bool TryGetMemberValue(object obj, string memberName, out object? value)
         {
-            Type type = obj.GetType();
-            Func<object, object> getter = GetGetterFromCache(type, memberName);
-            if (getter != null)
+            var type = obj.GetType();
+            var getter = GetGetterFromCache(type, memberName);
+            if (getter is {})
             {
                 value = getter(obj);
                 return true;
@@ -225,8 +223,8 @@ namespace NString
 
         private static readonly Cache<string, StringTemplate> TemplateCache = new Cache<string, StringTemplate>();
         private static readonly Cache<Type, IStringTemplateValueConverter> ValueConverterCache = new Cache<Type, IStringTemplateValueConverter>();
-        private static readonly Cache<Type, Cache<string, Func<object, object>>> GettersCache =
-            new Cache<Type, Cache<string, Func<object, object>>>();
+        private static readonly Cache<Type, Cache<string, Func<object, object?>?>> GettersCache =
+            new Cache<Type, Cache<string, Func<object, object?>?>>();
 
         private static readonly Lazy<MethodInfo> ConvertStringTemplateValueMethodInfo = new Lazy<MethodInfo>(
             () => typeof(IStringTemplateValueConverter).GetRuntimeMethod(nameof(IStringTemplateValueConverter.Convert), new[] { typeof(object) }));
@@ -245,34 +243,35 @@ namespace NString
                 () => (IStringTemplateValueConverter)Activator.CreateInstance(valueConverterType));
         }
 
-        private static Func<object, object> GetGetterFromCache(Type type, string memberName)
+        private static Func<object, object?>? GetGetterFromCache(Type type, string memberName)
         {
-            var typeGetters = GettersCache.GetOrAdd(type, () => new Cache<string, Func<object, object>>());
+            var typeGetters = GettersCache.GetOrAdd(type, () => new Cache<string, Func<object, object?>?>());
             var getter = typeGetters.GetOrAdd(memberName, () => CreateGetter(type, memberName));
             return getter;
         }
 
-        private static Func<object, object> CreateGetter(Type type, string memberName)
+        private static Func<object, object?>? CreateGetter(Type type, string memberName)
         {
-            MemberInfo member = null;
-            while (type != null)
+            MemberInfo? member = null;
+            Type? currentType = type;
+            while (currentType is Type)
             {
-                var info = type.GetTypeInfo();
+                var info = currentType.GetTypeInfo();
                 var prop = info.GetDeclaredProperty(memberName);
-                if (prop != null && prop.CanRead && prop.GetMethod.IsPublic)
+                if (prop is {} && prop.CanRead && prop.GetMethod.IsPublic)
                 {
                     member = prop;
                     break;
                 }
                 var field = info.GetDeclaredField(memberName);
-                if (field != null && field.IsPublic)
+                if (field is {} && field.IsPublic)
                 {
                     member = field;
                     break;
                 }
-                type = info.BaseType;
+                currentType = info.BaseType;
             }
-            if (member == null)
+            if (member is null)
                 return null;
 
             var param = Expression.Parameter(typeof(object), "x");
@@ -280,13 +279,13 @@ namespace NString
             Expression body;
 
             var converterAttribute = member.GetCustomAttribute<StringTemplateValueConverterAttribute>();
-            if (converterAttribute == null)
+            if (converterAttribute is null)
                 body = memberAccess;
-            else if (converterAttribute.ConverterType != null)
-                body = MakeStringTemplateValueConversionExpression(memberAccess, converterAttribute.ConverterType);
-            else
+            else if (converterAttribute.ConverterType is null)
                 throw new InvalidOperationException($"An instance of {nameof(StringTemplateValueConverterAttribute)}" +
                     $" must have its {nameof(StringTemplateValueConverterAttribute.ConverterType)} property set.");
+            else
+                body = MakeStringTemplateValueConversionExpression(memberAccess, converterAttribute.ConverterType);
 
             if (body.Type.GetTypeInfo().IsValueType)
                 body = Expression.Convert(body, typeof(object));

@@ -8,10 +8,10 @@ namespace NString.Tests.StringExtensionsTests
         [Fact]
         public void MatchesWildcard_Throws_If_Input_Is_Null()
         {
-            const string s = null;
+            const string? s = null;
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => s.MatchesWildcard("*"));
+            Assert.Throws<ArgumentNullException>(() => s!.MatchesWildcard("*"));
         }
 
         [Fact]
@@ -19,7 +19,7 @@ namespace NString.Tests.StringExtensionsTests
         {
             const string s = "hello world";
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => s.MatchesWildcard(null));
+            Assert.Throws<ArgumentNullException>(() => s.MatchesWildcard(null!));
         }
 
         [Theory]

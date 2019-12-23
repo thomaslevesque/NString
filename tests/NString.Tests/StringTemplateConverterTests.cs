@@ -217,7 +217,7 @@ namespace NString.Tests
 
         class NullToBoolConverter : StringTemplateValueConverter<object>
         {
-            public override object Convert(object value) => value == null;
+            public override object Convert(object value) => value is null;
         }
 
         class IncrementStateConverter : IStringTemplateValueConverter
@@ -225,23 +225,23 @@ namespace NString.Tests
             public int State;
             public bool CanConvert(Type objectType) => true;
 
-            public object Convert(object value) => Interlocked.Increment(ref State);
+            public object Convert(object? value) => Interlocked.Increment(ref State);
         }
 
         class CanNeverConvertConverter : IStringTemplateValueConverter
         {
             public bool CanConvert(Type objectType) => false;
 
-            public object Convert(object value) => throw new NotSupportedException();
+            public object Convert(object? value) => throw new NotSupportedException();
         }
 
         class BasicTestValues
         {
             [StringTemplateValueConverter(typeof(StringCollectionConverter))]
-            public IReadOnlyCollection<string> StringCollectionProperty { get; set; }
+            public IReadOnlyCollection<string>? StringCollectionProperty { get; set; }
 
             [StringTemplateValueConverter(typeof(StringCollectionConverter))]
-            public IReadOnlyCollection<string> StringCollectionField;
+            public IReadOnlyCollection<string>? StringCollectionField;
 
             [StringTemplateValueConverter(typeof(DateTimeToTicksConverter))]
             public DateTime ValueTypeProperty { get; set; }
@@ -261,7 +261,7 @@ namespace NString.Tests
 
         class ValuesWithMiscConverters
         {
-            [StringTemplateValueConverter(null)]
+            [StringTemplateValueConverter(null!)]
             public int AttributedWithNullConverterType { get; set; }
 
             [StringTemplateValueConverter(typeof(CanNeverConvertConverter))]
@@ -271,10 +271,10 @@ namespace NString.Tests
             public int AttributedWithStateMutatorConverter { get; set; }
 
             [StringTemplateValueConverter(typeof(StringCollectionConverter))]
-            public string[] StringArrayWithReadOnlyCollectionConverter { get; set; }
+            public string[]? StringArrayWithReadOnlyCollectionConverter { get; set; }
 
             [StringTemplateValueConverter(typeof(NullToBoolConverter))]
-            public object AttributedWithNullToBoolConverter { get; set; }
+            public object? AttributedWithNullToBoolConverter { get; set; }
         }
 
         class OtherValuesWithMiscConverters

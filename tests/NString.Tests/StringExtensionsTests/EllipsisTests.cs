@@ -8,19 +8,19 @@ namespace NString.Tests.StringExtensionsTests
         [Fact]
         public void Ellipsis_Throws_If_Input_Is_Null()
         {
-            const string s = null;
+            const string? s = null;
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => s.Ellipsis(10));
+            Assert.Throws<ArgumentNullException>(() => s!.Ellipsis(10));
         }
 
         [Fact]
         public void Ellipsis_With_Custom_Ellipsis_String_Throws_If_Input_Is_Null()
         {
-            const string s = null;
+            const string? s = null;
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => s.Ellipsis(10, "-----"));
+            Assert.Throws<ArgumentNullException>(() => s!.Ellipsis(10, "-----"));
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace NString.Tests.StringExtensionsTests
         {
             const string s = "hello";
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => s.Ellipsis(10, null));
+            Assert.Throws<ArgumentNullException>(() => s.Ellipsis(10, null!));
         }
 
         [Fact]

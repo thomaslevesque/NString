@@ -8,9 +8,9 @@ namespace NString.Tests.StringExtensionsTests
         [Fact]
         public void Left_Throws_If_String_Is_Null()
         {
-            const string s = null;
+            const string? s = null;
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => s.Left(2));
+            Assert.Throws<ArgumentNullException>(() => s!.Left(2));
         }
 
         [Fact]

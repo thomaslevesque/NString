@@ -25,6 +25,6 @@ namespace NString
         /// </summary>
         /// <param name="value">The input value.</param>
         /// <returns>The converted output value.</returns>
-        object Convert(object value);
+        object Convert(object? value);
     }
 }

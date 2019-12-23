@@ -17,7 +17,7 @@ namespace NString.Tests
             string format = "Bonjour {0}. Nous sommes le {1:D}, et il est {1:T}.";
             string templateFormat = "Bonjour {Name}. Nous sommes le {Date:D}, et il est {Date:T}.";
 
-            var values1 = new Dictionary<string, object>
+            var values1 = new Dictionary<string, object?>
             {
                 { "Name", name},
                 { "Date", date }
@@ -42,7 +42,7 @@ namespace NString.Tests
         {
             Assert.Throws<ArgumentNullException>(
                 // ReSharper disable once AssignNullToNotNullAttribute
-                () => StringTemplate.Format(null, ""));
+                () => StringTemplate.Format(null!, ""));
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace NString.Tests
         {
             Assert.Throws<ArgumentNullException>(
                 // ReSharper disable once AssignNullToNotNullAttribute
-                () => StringTemplate.Format("Bonjour {0}.", null));
+                () => StringTemplate.Format("Bonjour {0}.", null!));
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace NString.Tests
         {
             string format = "Bonjour {Name}";
 
-            var values1 = new Dictionary<string, object>
+            var values1 = new Dictionary<string, object?>
             {
                 { "Nam", "numero 6"},
             };
@@ -193,7 +193,7 @@ namespace NString.Tests
         class FieldValues
         {
             public int x;
-            public string text;
+            public string? text;
         }
         #pragma warning restore 414
         // ReSharper restore NotAccessedField.Local
@@ -208,9 +208,9 @@ namespace NString.Tests
 
         class DerivedValues : BaseValues
         {
-            public new string X;
+            public new string? X;
 #pragma warning disable 169
-            private new string Y;
+            private new string? Y;
 #pragma warning restore 169
         }
     }

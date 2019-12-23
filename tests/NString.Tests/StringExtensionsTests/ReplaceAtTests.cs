@@ -8,10 +8,10 @@ namespace NString.Tests.StringExtensionsTests
         [Fact]
         public void ReplaceAt_Throws_If_Input_Is_Null()
         {
-            const string input = null;
+            const string? input = null;
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => input.ReplaceAt(0, ' '));
+            Assert.Throws<ArgumentNullException>(() => input!.ReplaceAt(0, ' '));
         }
 
         [Theory]

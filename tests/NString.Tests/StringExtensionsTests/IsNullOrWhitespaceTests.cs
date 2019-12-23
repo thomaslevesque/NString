@@ -7,7 +7,7 @@ namespace NString.Tests.StringExtensionsTests
         [Fact]
         public void IsNullOrWhiteSpace_Returns_True_If_String_Is_Null()
         {
-            const string s = null;
+            const string? s = null;
             const bool expected = true;
             // ReSharper disable ConditionIsAlwaysTrueOrFalse
             bool actual = s.IsNullOrWhiteSpace();

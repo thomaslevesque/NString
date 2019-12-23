@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
 using NString.Internal;
@@ -30,13 +31,13 @@ namespace NString
         /// </summary>
         /// <param name="value">The input value.</param>
         /// <returns>The converted output value.</returns>
-        public abstract object Convert(T value);
+        public abstract object Convert([MaybeNull] T value);
 
-        object IStringTemplateValueConverter.Convert(object value)
+        object IStringTemplateValueConverter.Convert(object? value)
         {
-            if (value == null || value is T)
+            if (value is null || value is T)
             {
-                return Convert((T)value);
+                return Convert((T)value!);
             }
             else
             {

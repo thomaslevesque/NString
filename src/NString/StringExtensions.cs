@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace NString
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [ContractAnnotation("s:null=>true")]
         [Pure]
-        public static bool IsNullOrEmpty(this string s)
+        public static bool IsNullOrEmpty([NotNullWhen(false)] this string? s)
         {
             return string.IsNullOrEmpty(s);
         }
@@ -33,12 +34,12 @@ namespace NString
         /// Indicates whether the specified string is null, empty, or consists only of white-space characters.
         /// </summary>
         /// <param name="s">the string to test</param>
-        /// <returns>true if the value parameter is null or String.Empty, or ifvalue consists exclusively of white-space characters.</returns>
+        /// <returns>true if the value parameter is null or String.Empty, or if value consists exclusively of white-space characters.</returns>
         /// <remarks>This is just a shortcut for <see cref="String.IsNullOrWhiteSpace"/>, allowing it to be used as an extension method.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [ContractAnnotation("s:null=>true")]
         [Pure]
-        public static bool IsNullOrWhiteSpace(this string s)
+        public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? s)
         {
             return string.IsNullOrWhiteSpace(s);
         }
@@ -51,7 +52,7 @@ namespace NString
         /// <exception cref="ArgumentNullException">values is null.</exception>
         /// <returns>A string that consists of the members of values delimited by the separator string. If values has no members, the method returns String.Empty.</returns>
         [Pure]
-        public static string Join([NotNull] this IEnumerable<string> values, string separator = null)
+        public static string Join([NotNull] this IEnumerable<string> values, string? separator = null)
         {
             values.CheckArgumentNull(nameof(values));
             return string.Join(separator, values);
@@ -74,8 +75,7 @@ namespace NString
         {
             using (StringReader reader = new StringReader(s))
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                while (reader.ReadLine() is string line)
                 {
                     yield return line;
                 }
@@ -326,7 +326,7 @@ namespace NString
         [Pure]
         public static string Reverse([NotNull] this string s)
         {
-            if (s == null) throw new ArgumentNullException(nameof(s));
+            s.CheckArgumentNull(nameof(s));
             var textElements = s.GetTextElements();
             return string.Concat(textElements.Reverse());
         }

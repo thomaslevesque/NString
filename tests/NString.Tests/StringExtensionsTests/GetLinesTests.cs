@@ -9,9 +9,9 @@ namespace NString.Tests.StringExtensionsTests
         [Fact]
         public void GetLines_Throws_If_String_Is_Null()
         {
-            const string s = null;
+            const string? s = null;
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => s.GetLines());
+            Assert.Throws<ArgumentNullException>(() => s!.GetLines());
         }
 
         [Fact]

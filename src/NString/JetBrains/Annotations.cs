@@ -1,5 +1,6 @@
 ﻿using System;
 
+#nullable disable
 #pragma warning disable 1591
 // ReSharper disable All
 namespace JetBrains.Annotations
@@ -70,7 +71,7 @@ namespace JetBrains.Annotations
     /// </summary>
     /// <example><code>
     /// public void Foo(string param) {
-    ///   if (param == null)
+    ///   if (param is null)
     ///     throw new ArgumentNullException("par"); // Warning: Cannot resolve symbol
     /// }
     /// </code></example>

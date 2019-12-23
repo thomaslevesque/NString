@@ -38,19 +38,10 @@ namespace NString.Tests
         }
 
         [Fact]
-        public void Should_Raise_Exception_When_Called_With_Null_Template()
+        public void Should_Raise_Exception_When_Called_With_Null_Argument()
         {
-            Assert.Throws<ArgumentNullException>(
-                // ReSharper disable once AssignNullToNotNullAttribute
-                () => StringTemplate.Format(null!, ""));
-        }
-
-        [Fact]
-        public void Should_Raise_Exception_When_Called_With_Null_Values()
-        {
-            Assert.Throws<ArgumentNullException>(
-                // ReSharper disable once AssignNullToNotNullAttribute
-                () => StringTemplate.Format("Bonjour {0}.", null!));
+            TestHelper.AssertThrowsWhenArgumentNull(
+                () => StringTemplate.Format("", new object(), true, null));
         }
 
         [Fact]

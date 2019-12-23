@@ -156,7 +156,7 @@ namespace NString
         public static string Capitalize([NotNull] this string s, [NotNull] CultureInfo culture)
         {
             s.CheckArgumentNull(nameof(s));
-            s.CheckArgumentNull(nameof(culture));
+            culture.CheckArgumentNull(nameof(culture));
             if (s.Length == 0)
                 return s;
             var chars = s.ToCharArray();

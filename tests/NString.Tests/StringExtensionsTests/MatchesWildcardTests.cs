@@ -3,23 +3,12 @@ using Xunit;
 
 namespace NString.Tests.StringExtensionsTests
 {
-        public class MatchesWildcardTests
+    public class MatchesWildcardTests
     {
         [Fact]
-        public void MatchesWildcard_Throws_If_Input_Is_Null()
+        public void MatchesWildcard_Throws_If_Argument_Is_Null()
         {
-            const string? s = null;
-            // ReSharper disable once AssignNullToNotNullAttribute
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => s!.MatchesWildcard("*"));
-        }
-
-        [Fact]
-        public void MatchesWildcard_Throws_If_Pattern_Is_Null()
-        {
-            const string s = "hello world";
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => s.MatchesWildcard(null!));
+            TestHelper.AssertThrowsWhenArgumentNull(() => "abcde".MatchesWildcard("*", true));
         }
 
         [Theory]

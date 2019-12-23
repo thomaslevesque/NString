@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace NString.Tests.StringExtensionsTests
 {
-        public class JoinTests
+    public class JoinTests
     {
         [Fact]
-        public void Join_Throws_If_Values_Is_Null()
+        public void Join_Throws_If_Argument_Is_Null()
         {
-            const IEnumerable<string>? values = null;
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => values!.Join(" "));
+            TestHelper.AssertThrowsWhenArgumentNull(() => new[] { "a", "b", "c" }.Join(" "));
         }
 
         [Fact]

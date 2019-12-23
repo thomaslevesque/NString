@@ -3,28 +3,18 @@ using Xunit;
 
 namespace NString.Tests.StringExtensionsTests
 {
-        public class ContainsTest
+    public class ContainsTest
     {
         [Fact]
-        public void Contains_Throws_If_Input_Is_Null()
+        public void Contains_Throws_If_Argument_Is_Null()
         {
-            const string? input = null;
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => input!.Contains("", StringComparison.CurrentCultureIgnoreCase));
-        }
-
-        [Fact]
-        public void Contains_Throws_If_Substring_Is_Null()
-        {
-            const string input = "";
-            Assert.Throws<ArgumentNullException>(() => input.Contains(null!, StringComparison.CurrentCultureIgnoreCase));
+            TestHelper.AssertThrowsWhenArgumentNull(() => "abcde".Contains("bcd", StringComparison.CurrentCultureIgnoreCase));
         }
 
         [Fact]
         public void Contains_Throws_If_ComparisonType_Is_Undefined()
         {
-            const string input = "";
-            Assert.Throws<ArgumentOutOfRangeException>(() => input.Contains("", (StringComparison)42));
+            Assert.Throws<ArgumentOutOfRangeException>(() => "abcde".Contains("bcd", (StringComparison)42));
         }
 
         [Theory]

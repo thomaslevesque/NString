@@ -3,15 +3,12 @@ using Xunit;
 
 namespace NString.Tests.StringExtensionsTests
 {
-        public class ReplaceAtTests
+    public class ReplaceAtTests
     {
         [Fact]
-        public void ReplaceAt_Throws_If_Input_Is_Null()
+        public void ReplaceAt_Throws_If_Argument_Is_Null()
         {
-            const string? input = null;
-            // ReSharper disable once AssignNullToNotNullAttribute
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Assert.Throws<ArgumentNullException>(() => input!.ReplaceAt(0, ' '));
+            TestHelper.AssertThrowsWhenArgumentNull(() => "hello".ReplaceAt(0, ' '));
         }
 
         [Theory]
@@ -19,7 +16,6 @@ namespace NString.Tests.StringExtensionsTests
         [InlineData("foo", 3)]
         public void ReplaceAt_Throws_If_Index_Out_Of_Range(string input, int index)
         {
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<ArgumentOutOfRangeException>(() => input.ReplaceAt(index, ' '));
         }
 
@@ -32,6 +28,5 @@ namespace NString.Tests.StringExtensionsTests
             string actual = s.ReplaceAt(5, '_');
             Assert.Equal(expected, actual);
         }
-
     }
 }

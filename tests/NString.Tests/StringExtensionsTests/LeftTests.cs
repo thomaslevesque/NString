@@ -3,21 +3,18 @@ using Xunit;
 
 namespace NString.Tests.StringExtensionsTests
 {
-        public class LeftTests
+    public class LeftTests
     {
         [Fact]
-        public void Left_Throws_If_String_Is_Null()
+        public void Left_Throws_If_Argument_Is_Null()
         {
-            const string? s = null;
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => s!.Left(2));
+            TestHelper.AssertThrowsWhenArgumentNull(() => "abcde".Left(2));
         }
 
         [Fact]
         public void Left_Throws_If_Count_Is_Greater_Than_Length()
         {
-            const string s = "hello";
-            Assert.Throws<ArgumentOutOfRangeException>(() => s.Left(10));
+            Assert.Throws<ArgumentOutOfRangeException>(() => "hello".Left(10));
         }
 
         [Fact]

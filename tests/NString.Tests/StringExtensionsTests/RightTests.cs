@@ -6,11 +6,9 @@ namespace NString.Tests.StringExtensionsTests
     public class RightTests
     {
         [Fact]
-        public void Right_Throws_If_String_Is_Null()
+        public void Right_Throws_If_Argument_Is_Null()
         {
-            const string? s = null;
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => s!.Right(2));
+            TestHelper.AssertThrowsWhenArgumentNull(() => "hello".Right(2));
         }
 
         [Fact]

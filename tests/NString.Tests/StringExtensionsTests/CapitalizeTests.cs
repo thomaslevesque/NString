@@ -1,9 +1,22 @@
-﻿using Xunit;
+﻿using System.Globalization;
+using Xunit;
 
 namespace NString.Tests.StringExtensionsTests
 {
-        public class CapitalizeTests
+    public class CapitalizeTests
     {
+        [Fact]
+        public void Capitalize_Throws_If_Argument_Is_Null()
+        {
+            TestHelper.AssertThrowsWhenArgumentNull(() => "hello".Capitalize());
+        }
+
+        [Fact]
+        public void Capitalize_With_Culture_Throws_If_Argument_Is_Null()
+        {
+            TestHelper.AssertThrowsWhenArgumentNull(() => "hello".Capitalize(CultureInfo.CurrentCulture));
+        }
+
         [Fact]
         public void Capitalize_Returns_Input_With_UpperCase_First_Letter()
         {

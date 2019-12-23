@@ -2,7 +2,7 @@
 
 namespace NString.Tests.StringExtensionsTests
 {
-        public class IsNullOrEmptyTests
+    public class IsNullOrEmptyTests
     {
         [Fact]
         public void IsNullOrEmpty_Returns_True_If_String_Is_Null()

@@ -4,14 +4,12 @@ using Xunit;
 
 namespace NString.Tests.StringExtensionsTests
 {
-        public class ReverseTests
+    public class ReverseTests
     {
         [Fact]
-        public void Reverse_Throws_If_String_Is_Null()
+        public void Reverse_Throws_If_Argument_Is_Null()
         {
-            const string? s = null;
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => s!.Reverse());
+            TestHelper.AssertThrowsWhenArgumentNull(() => "hello".Reverse());
         }
 
         [Fact]
